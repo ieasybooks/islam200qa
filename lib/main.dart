@@ -150,29 +150,32 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    for (int sectionId = 0; sectionId <= lastSection; ++sectionId) {
-      _getSectionParagraphs(sectionId).then(
-        (paragraph) {
-          _sectionTiles.add(
-            ListTile(
-              title: Text(
-                sprintf(
-                  '%s. %s',
-                  [
-                    arabizeNumbers(sectionId.toString()),
-                    paragraph[0],
-                  ],
+    rootBundle
+        .loadString('data/index.txt')
+        .then((titles) => titles.split('\n'))
+        .then(
+      (titles) {
+        titles.asMap().forEach(
+              (index, title) => _sectionTiles.add(
+                ListTile(
+                  title: Text(
+                    sprintf(
+                      '%s. %s',
+                      [
+                        arabizeNumbers((index + 1).toString()),
+                        title,
+                      ],
+                    ),
+                  ),
+                  onTap: () {
+                    _loadSection(index + 1);
+                    Navigator.pop(context);
+                  },
                 ),
               ),
-              onTap: () {
-                _loadSection(sectionId);
-                Navigator.pop(context);
-              },
-            ),
-          );
-        },
-      );
-    }
+            );
+      },
+    );
   }
 
   @override
