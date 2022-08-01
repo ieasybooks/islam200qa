@@ -18,7 +18,10 @@ class TitleCard extends StatelessWidget {
           child: SelectableText(
             paragraph,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 24, color: Colors.white),
+            style: const TextStyle(
+              fontSize: 24,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
