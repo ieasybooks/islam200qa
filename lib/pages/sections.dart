@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:islam200qa/constants.dart';
 import 'package:islam200qa/routes.gr.dart';
 import 'package:islam200qa/utils/string_utils.dart';
 import 'package:sprintf/sprintf.dart';
@@ -16,33 +16,25 @@ class _SectionsPageState extends State<SectionsPage> {
   final List<ListTile> _sectionTiles = [];
 
   void _loadIndex() {
-    rootBundle
-        .loadString('data/index.txt')
-        .then((titles) => titles.split('\n'))
-        .then(
-      (titles) {
-        titles.asMap().forEach(
-              (index, title) => _sectionTiles.add(
-                ListTile(
-                  title: Text(
-                    sprintf(
-                      '%s. %s',
-                      [
-                        arabizeNumbers((index + 1).toString()),
-                        title,
-                      ],
-                    ),
-                  ),
-                  onTap: () {
-                    AutoRouter.of(context)
-                        .push(SectionRoute(sectionId: index + 1));
-                    Navigator.pop(context);
-                  },
+    index.asMap().forEach(
+          (index, title) => _sectionTiles.add(
+            ListTile(
+              title: Text(
+                sprintf(
+                  '%s. %s',
+                  [
+                    arabizeNumbers((index + 1).toString()),
+                    title,
+                  ],
                 ),
               ),
-            );
-      },
-    );
+              onTap: () {
+                AutoRouter.of(context).push(SectionRoute(sectionId: index + 1));
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        );
   }
 
   @override
