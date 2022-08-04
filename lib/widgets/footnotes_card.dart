@@ -27,12 +27,12 @@ class FootnotesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-          hoverColor: Colors.transparent,
-          dividerColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          ),
+        hoverColor: Colors.transparent,
+        dividerColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+      ),
       child: ListTileTheme(
         contentPadding: const EdgeInsets.all(0),
         dense: true,
@@ -65,9 +65,12 @@ class FootnotesCard extends StatelessWidget {
           ),
           children: footnotes
               .map(
-                (footnote) => SelectableText.rich(
-                  TextSpan(children: _buildFootnoteText(footnote)),
-                  textAlign: TextAlign.justify,
+                (footnote) => Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: SelectableText.rich(
+                    TextSpan(children: _buildFootnoteText(footnote)),
+                    textAlign: TextAlign.justify,
+                  ),
                 ),
               )
               .toList(),
