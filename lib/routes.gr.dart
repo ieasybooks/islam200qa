@@ -48,9 +48,7 @@ class AppRouter extends _i3.RootStackRouter {
 
   @override
   List<_i3.RouteConfig> get routes => [
-        _i3.RouteConfig('/#redirect',
-            path: '/', redirectTo: '/sections', fullMatch: true),
-        _i3.RouteConfig(SectionsRoute.name, path: '/sections', children: [
+        _i3.RouteConfig(SectionsRoute.name, path: '/', children: [
           _i3.RouteConfig('#redirect',
               path: '',
               parent: SectionsRoute.name,
@@ -66,7 +64,7 @@ class AppRouter extends _i3.RootStackRouter {
 /// [_i1.SectionsPage]
 class SectionsRoute extends _i3.PageRouteInfo<void> {
   const SectionsRoute({List<_i3.PageRouteInfo>? children})
-      : super(SectionsRoute.name, path: '/sections', initialChildren: children);
+      : super(SectionsRoute.name, path: '/', initialChildren: children);
 
   static const String name = 'SectionsRoute';
 }

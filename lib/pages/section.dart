@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:islam200qa/routes.gr.dart';
@@ -7,6 +8,7 @@ import 'package:islam200qa/utils/screen_utils.dart';
 import 'package:islam200qa/utils/string_utils.dart';
 import 'package:islam200qa/widgets/footnotes_card.dart';
 import 'package:islam200qa/widgets/paragraph_card.dart';
+import 'package:islam200qa/widgets/share_button.dart';
 import 'package:islam200qa/widgets/title_card.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -114,11 +116,15 @@ class _SectionPageState extends State<SectionPage> {
         );
 
         if (footnotes.isNotEmpty) {
-          _content.add(const SizedBox(height: 10));
           _content.add(FootnotesCard(footnotes: footnotes));
+        } else {
+          _content.add(const SizedBox(height: 10));
         }
 
-        _content.add(const SizedBox(height: 10));
+        if (!kIsWeb) {
+          _content.add(ShareButton(title: paragraphs[0], sectionId: sectionId));
+          _content.add(const SizedBox(height: 5));
+        }
 
         setState(() {});
       },

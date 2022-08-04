@@ -7,7 +7,7 @@ import 'package:islam200qa/pages/sections.dart';
   replaceInRouteName: 'Page,Route',
   routes: <AutoRoute>[
     CustomRoute(
-        path: '/sections',
+        path: '/',
         page: SectionsPage,
         customRouteBuilder: sectionsCustomRouteBuilder,
         initial: true,

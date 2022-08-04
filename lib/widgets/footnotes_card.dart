@@ -27,35 +27,51 @@ class FootnotesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-        hoverColor: Colors.transparent,
-        dividerColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-      ),
-      child: ExpansionTile(
-        backgroundColor: Colors.transparent,
-        collapsedBackgroundColor: Colors.transparent,
-        iconColor: Colors.transparent,
-        collapsedIconColor: Colors.transparent,
-        childrenPadding: const EdgeInsets.fromLTRB(16.0, 10.0, 16.0, 0.0),
-        expandedAlignment: Alignment.topRight,
-        expandedCrossAxisAlignment: CrossAxisAlignment.start,
-        title: const Text(
-          'الحواشي (إضغط للإظهار)',
-          style: TextStyle(fontSize: 14),
-        ),
-        children: footnotes
-            .map(
-              (footnote) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: SelectableText.rich(
+          hoverColor: Colors.transparent,
+          dividerColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          ),
+      child: ListTileTheme(
+        contentPadding: const EdgeInsets.all(0),
+        dense: true,
+        horizontalTitleGap: 0.0,
+        minLeadingWidth: 0,
+        child: ExpansionTile(
+          tilePadding: const EdgeInsets.only(right: 0.0),
+          backgroundColor: Colors.transparent,
+          collapsedBackgroundColor: Colors.transparent,
+          iconColor: Colors.transparent,
+          collapsedIconColor: Colors.transparent,
+          childrenPadding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
+          expandedAlignment: Alignment.topRight,
+          expandedCrossAxisAlignment: CrossAxisAlignment.start,
+          title: const Text.rich(
+            TextSpan(
+              children: [
+                WidgetSpan(
+                  child: Icon(
+                    Icons.list_alt_rounded,
+                    color: Colors.green,
+                  ),
+                ),
+                TextSpan(
+                  text: ' الحواشي (إضغط للإظهار)',
+                  style: TextStyle(fontSize: 14),
+                ),
+              ],
+            ),
+          ),
+          children: footnotes
+              .map(
+                (footnote) => SelectableText.rich(
                   TextSpan(children: _buildFootnoteText(footnote)),
                   textAlign: TextAlign.justify,
                 ),
-              ),
-            )
-            .toList(),
+              )
+              .toList(),
+        ),
       ),
     );
   }
