@@ -6,6 +6,7 @@ import 'package:islam200qa/routes.gr.dart';
 import 'package:islam200qa/constants.dart';
 import 'package:islam200qa/utils/screen_utils.dart';
 import 'package:islam200qa/utils/string_utils.dart';
+import 'package:islam200qa/widgets/copy_button.dart';
 import 'package:islam200qa/widgets/footnotes_card.dart';
 import 'package:islam200qa/widgets/paragraph_card.dart';
 import 'package:islam200qa/widgets/share_button.dart';
@@ -123,8 +124,11 @@ class _SectionPageState extends State<SectionPage> {
 
         if (!kIsWeb) {
           _content.add(ShareButton(title: paragraphs[0], sectionId: sectionId));
-          _content.add(const SizedBox(height: 5));
+          _content.add(const SizedBox(height: 10));
         }
+
+        _content.add(CopyButton(paragraphs: paragraphs, sectionId: sectionId));
+        _content.add(const SizedBox(height: 5));
 
         setState(() {});
       },
