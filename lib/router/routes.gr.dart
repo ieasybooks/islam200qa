@@ -14,13 +14,18 @@
 import 'package:auto_route/auto_route.dart' as _i3;
 import 'package:flutter/material.dart' as _i4;
 
-import 'pages/section.dart' as _i2;
-import 'pages/sections.dart' as _i1;
-import 'routes.dart' as _i5;
+import '../pages/section.dart' as _i2;
+import '../pages/sections.dart' as _i1;
+import 'guards/check_if_section_exists.dart' as _i5;
+import 'routes.dart' as _i6;
 
 class AppRouter extends _i3.RootStackRouter {
-  AppRouter([_i4.GlobalKey<_i4.NavigatorState>? navigatorKey])
+  AppRouter(
+      {_i4.GlobalKey<_i4.NavigatorState>? navigatorKey,
+      required this.checkIfSectionExists})
       : super(navigatorKey);
+
+  final _i5.CheckIfSectionExists checkIfSectionExists;
 
   @override
   final Map<String, _i3.PageFactory> pagesMap = {
@@ -28,7 +33,7 @@ class AppRouter extends _i3.RootStackRouter {
       return _i3.CustomPage<dynamic>(
           routeData: routeData,
           child: const _i1.SectionsPage(),
-          customRouteBuilder: _i5.sectionsCustomRouteBuilder,
+          customRouteBuilder: _i6.sectionsCustomRouteBuilder,
           opaque: true,
           barrierDismissible: false);
     },
@@ -40,7 +45,7 @@ class AppRouter extends _i3.RootStackRouter {
       return _i3.CustomPage<dynamic>(
           routeData: routeData,
           child: _i2.SectionPage(key: args.key, sectionId: args.sectionId),
-          customRouteBuilder: _i5.sectionsCustomRouteBuilder,
+          customRouteBuilder: _i6.sectionsCustomRouteBuilder,
           opaque: true,
           barrierDismissible: false);
     }
@@ -55,7 +60,9 @@ class AppRouter extends _i3.RootStackRouter {
               redirectTo: '1',
               fullMatch: true),
           _i3.RouteConfig(SectionRoute.name,
-              path: ':sectionId', parent: SectionsRoute.name)
+              path: ':sectionId',
+              parent: SectionsRoute.name,
+              guards: [checkIfSectionExists])
         ])
       ];
 }

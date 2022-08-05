@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:islam200qa/router/guards/check_if_section_exists.dart';
 import 'package:islam200qa/strategies/url_strategy.dart';
 
-import 'routes.gr.dart';
+import 'router/routes.gr.dart';
 
 void main() {
   usePathUrlStrategy();
@@ -11,7 +12,7 @@ void main() {
 class Islam200QaApp extends StatelessWidget {
   Islam200QaApp({Key? key}) : super(key: key);
 
-  final _appRouter = AppRouter();
+  final _appRouter = AppRouter(checkIfSectionExists: CheckIfSectionExists());
 
   @override
   Widget build(BuildContext context) {
