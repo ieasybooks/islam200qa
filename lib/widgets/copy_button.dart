@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:sprintf/sprintf.dart';
 
 class CopyButton extends StatelessWidget {
-  CopyButton(
-      {Key? key, required List<String> paragraphs, required this.sectionId})
-      : content = (paragraphs +
+  CopyButton({
+    Key? key,
+    required List<String> paragraphs,
+    required this.sectionId,
+  })  : content = (paragraphs +
                 [
                   '',
                   sprintf(
@@ -20,7 +22,7 @@ class CopyButton extends StatelessWidget {
   final int sectionId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: Align(

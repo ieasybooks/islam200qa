@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:islam200qa/utils/screen_utils.dart';
 
 class ParagraphCard extends StatelessWidget {
-  const ParagraphCard({Key? key, required this.paragraph}) : super(key: key);
+  const ParagraphCard({
+    Key? key,
+    required this.paragraph,
+  }) : super(key: key);
 
   final String paragraph;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     int coloringDepth = 0;
 
     return Card(
       elevation: 2,
       shape: const RoundedRectangleBorder(
-        side: BorderSide(
-          color: Colors.lightGreen,
-        ),
+        side: BorderSide(color: Colors.lightGreen),
         borderRadius: BorderRadius.all(Radius.circular(5)),
       ),
       child: Padding(

@@ -1,6 +1,325 @@
+import 'package:islam200qa/utils/string_utils.dart';
+import 'package:islam200qa/widgets/index/index_multi_sections_model.dart';
+import 'package:islam200qa/widgets/index/index_section_model.dart';
+import 'package:islam200qa/widgets/index/index_sections_combiner_model.dart';
+import 'package:islam200qa/widgets/index/index_single_section_model.dart';
+
 const int lastSection = 212;
 
-const List<String> index = [
+const double indexBasePadding = 8.0;
+
+List<IndexSectionModel> index = [
+  const IndexSingleSectionModel(
+    sectionId: 1,
+  ),
+  IndexMultiSectionsModel(
+    title: 'أول ما يجب على الانسان والغاية من وجوده',
+    startSection: 2,
+    endSection: 11,
+  ),
+  const IndexSingleSectionModel(
+    sectionId: 12,
+  ),
+  IndexSectionsCombinerModel(
+    title: 'مراتب الدين',
+    children: [
+      const IndexSingleSectionModel(
+        sectionId: 13,
+      ),
+      IndexMultiSectionsModel(
+        title: 'الإسلام وأدله',
+        startSection: 14,
+        endSection: 35,
+      ),
+      IndexSectionsCombinerModel(
+        title: 'الإيمان وأدلته',
+        children: [
+          const IndexSingleSectionModel(
+            sectionId: 36,
+          ),
+          IndexMultiSectionsModel(
+            title: 'الإيمان قول وعمل',
+            startSection: 37,
+            endSection: 42,
+          ),
+          IndexSectionsCombinerModel(
+            title: 'الإيمان بالله وأقسامه الثلاثة',
+            children: [
+              const IndexSingleSectionModel(
+                sectionId: 43,
+              ),
+              IndexMultiSectionsModel(
+                title: 'توحيد الألوهية وضده الشرك',
+                startSection: 44,
+                endSection: 47,
+              ),
+              IndexMultiSectionsModel(
+                title: 'توحيد الربوبية وضده الكفر',
+                startSection: 48,
+                endSection: 49,
+              ),
+              IndexMultiSectionsModel(
+                title: 'توحيد الأسماء والصفات وأدلته وبيان بعض ما اختلف فيه في هذا الباب',
+                startSection: 50,
+                endSection: 70,
+              ),
+              const IndexSingleSectionModel(
+                sectionId: 71,
+              ),
+            ],
+          ),
+          IndexMultiSectionsModel(
+            title: 'الإيمان بالملائكة',
+            startSection: 72,
+            endSection: 74,
+          ),
+          IndexMultiSectionsModel(
+            title: 'الإيمان بالكتب',
+            startSection: 75,
+            endSection: 84,
+          ),
+          IndexMultiSectionsModel(
+            title: 'الإيمان بالرسل',
+            startSection: 85,
+            endSection: 98,
+          ),
+          IndexSectionsCombinerModel(
+            title: 'الإيمان باليوم الآخر',
+            children: [
+              const IndexSingleSectionModel(
+                sectionId: 99,
+              ),
+              const IndexSingleSectionModel(
+                sectionId: 100,
+              ),
+              const IndexSingleSectionModel(
+                sectionId: 101,
+              ),
+              IndexMultiSectionsModel(
+                title: 'بعض أمارات اليوم الآخر',
+                startSection: 102,
+                endSection: 103,
+              ),
+              const IndexSingleSectionModel(
+                sectionId: 104,
+              ),
+              IndexMultiSectionsModel(
+                title: 'فتنة القبر ونعيمه أو عذابه',
+                startSection: 105,
+                endSection: 106,
+              ),
+              IndexMultiSectionsModel(
+                title: 'البعث والنفخ',
+                startSection: 107,
+                endSection: 109,
+              ),
+              IndexMultiSectionsModel(
+                title: 'الحشر',
+                startSection: 110,
+                endSection: 113,
+              ),
+              IndexMultiSectionsModel(
+                title: 'العرض والحساب ونشر الصحف',
+                startSection: 114,
+                endSection: 117,
+              ),
+              IndexMultiSectionsModel(
+                title: 'الميزان وبيان وصفه',
+                startSection: 118,
+                endSection: 119,
+              ),
+              IndexMultiSectionsModel(
+                title: 'الصراط',
+                startSection: 120,
+                endSection: 121,
+              ),
+              IndexMultiSectionsModel(
+                title: 'القصاص وصفته',
+                startSection: 122,
+                endSection: 123,
+              ),
+              IndexMultiSectionsModel(
+                title: 'الحوض وصفته',
+                startSection: 124,
+                endSection: 125,
+              ),
+              IndexMultiSectionsModel(
+                title: 'الجنة والنار ووصفهما وبعض الشبه المتعلقة بهما',
+                startSection: 126,
+                endSection: 129,
+              ),
+              const IndexSingleSectionModel(
+                sectionId: 130,
+              ),
+              IndexMultiSectionsModel(
+                title: 'الشفاعة وأنواعها',
+                startSection: 131,
+                endSection: 132,
+              ),
+              const IndexSingleSectionModel(
+                sectionId: 133,
+              ),
+            ],
+          ),
+          IndexSectionsCombinerModel(
+            title: 'الإيمان بالقدر',
+            children: [
+              const IndexSingleSectionModel(
+                sectionId: 134,
+              ),
+              const IndexSingleSectionModel(
+                sectionId: 135,
+              ),
+              IndexMultiSectionsModel(
+                title: 'المرتبة الأولى: الإيمان بالعلم',
+                startSection: 136,
+                endSection: 136,
+              ),
+              IndexMultiSectionsModel(
+                title: 'المرتبة الثانية: الإيمان بالكتابة وبيان أنواعها',
+                startSection: 137,
+                endSection: 143,
+              ),
+              IndexMultiSectionsModel(
+                title: 'المرتبة الثالثة: الإيمان بالمشيئة',
+                startSection: 144,
+                endSection: 145,
+              ),
+              IndexMultiSectionsModel(
+                title: 'المرتبة الرابعة: الإيمان بالخلق',
+                startSection: 146,
+                endSection: 146,
+              ),
+              IndexMultiSectionsModel(
+                title: 'بعض الشبهات المتعلقة بباب القدر',
+                startSection: 147,
+                endSection: 150,
+              ),
+            ],
+          ),
+          const IndexSingleSectionModel(
+            sectionId: 151,
+          ),
+        ],
+      ),
+      IndexMultiSectionsModel(
+        title: 'الإحسان وأدلته',
+        startSection: 152,
+        endSection: 152,
+      ),
+    ],
+  ),
+  IndexSectionsCombinerModel(
+    title: 'الكفر',
+    children: [
+      const IndexSingleSectionModel(
+        sectionId: 153,
+      ),
+      const IndexSingleSectionModel(
+        sectionId: 154,
+      ),
+      IndexMultiSectionsModel(
+        title: 'الكفر الأكبر وأقسامه',
+        startSection: 155,
+        endSection: 157,
+      ),
+      const IndexSingleSectionModel(
+        sectionId: 158,
+      ),
+      const IndexSingleSectionModel(
+        sectionId: 159,
+      ),
+      IndexMultiSectionsModel(
+        title: 'أقسام الظلم والفسوق والنفاق',
+        startSection: 160,
+        endSection: 163,
+      ),
+      IndexMultiSectionsModel(
+        title: 'من أشكال الكفر: حكم السحر والساحر',
+        startSection: 164,
+        endSection: 166,
+      ),
+      IndexMultiSectionsModel(
+        title: 'الرقى المشروعة  والرقى الممنوعة',
+        startSection: 167,
+        endSection: 168,
+      ),
+      IndexMultiSectionsModel(
+        title: 'حكم التعاليق والتمائم',
+        startSection: 169,
+        endSection: 170,
+      ),
+      IndexMultiSectionsModel(
+        title: 'حكم الكهان والمنجمين',
+        startSection: 171,
+        endSection: 174,
+      ),
+      const IndexSingleSectionModel(
+        sectionId: 175,
+      ),
+      const IndexSingleSectionModel(
+        sectionId: 176,
+      ),
+    ],
+  ),
+  IndexSectionsCombinerModel(
+    title: 'أقسام المعاصي وبم تكفر السيئات',
+    children: [
+      const IndexSingleSectionModel(
+        sectionId: 177,
+      ),
+      const IndexSingleSectionModel(
+        sectionId: 178,
+      ),
+      IndexMultiSectionsModel(
+        title: 'التوبة النصوح',
+        startSection: 179,
+        endSection: 185,
+      ),
+    ],
+  ),
+  IndexSectionsCombinerModel(
+    title: 'الصراط المستقيم الذي أمرنا الله تعالى بسلوكه',
+    children: [
+      IndexMultiSectionsModel(
+        title: 'السنّة',
+        startSection: 186,
+        endSection: 188,
+      ),
+      IndexMultiSectionsModel(
+        title: 'البدع وأنواعها',
+        startSection: 189,
+        endSection: 195,
+      ),
+    ],
+  ),
+  IndexMultiSectionsModel(
+    title: 'الواجب التزامه في أصحاب الرسول صلى الله عليه وسلم وأهل بيته',
+    startSection: 196,
+    endSection: 206,
+  ),
+  const IndexSingleSectionModel(
+    sectionId: 207,
+  ),
+  const IndexSingleSectionModel(
+    sectionId: 208,
+  ),
+  const IndexSingleSectionModel(
+    sectionId: 209,
+  ),
+  const IndexSingleSectionModel(
+    sectionId: 210,
+  ),
+  const IndexSingleSectionModel(
+    sectionId: 211,
+  ),
+  const IndexSingleSectionModel(
+    sectionId: 212,
+  ),
+];
+
+const List<String> indexTitles = [
+  '',
   'المقدمة',
   'أول ما يجب على العباد',
   'الأمر الذي خلق الله الخلق لأجله',
@@ -214,3 +533,5 @@ const List<String> index = [
   'الطائفة التي عناها النبي عليه السلام بقوله لا تزال طائفة من أمتي على الحق ظاهرة',
   'الخاتمة',
 ];
+
+final List<String> indexTitlesProcessed = indexTitles.map(normalizeArabicText).toList();

@@ -1,0 +1,3 @@
+class IndexSectionModel {
+  const IndexSectionModel();
+}

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 enum ScreenSize { Small, Normal, Large, ExtraLarge }
 
-double getDeviceHeight(BuildContext context) => MediaQuery.of(context).size.height;
+double getDeviceHeight(final BuildContext context) => MediaQuery.of(context).size.height;
 
-double getDeviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
+double getDeviceWidth(final BuildContext context) => MediaQuery.of(context).size.width;
 
-ScreenSize getScreenSize(BuildContext context) {
+ScreenSize getScreenSize(final BuildContext context) {
   double deviceWidth = getDeviceWidth(context);
   if (deviceWidth > 900) return ScreenSize.ExtraLarge;
   if (deviceWidth > 600) return ScreenSize.Large;

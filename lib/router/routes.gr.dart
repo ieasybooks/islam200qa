@@ -14,8 +14,8 @@
 import 'package:auto_route/auto_route.dart' as _i3;
 import 'package:flutter/material.dart' as _i4;
 
-import '../pages/section.dart' as _i2;
-import '../pages/sections.dart' as _i1;
+import '../pages/section_page.dart' as _i2;
+import '../pages/sections_page.dart' as _i1;
 import 'guards/check_if_section_exists.dart' as _i5;
 import 'routes.dart' as _i6;
 

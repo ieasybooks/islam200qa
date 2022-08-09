@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:islam200qa/router/routes.gr.dart';
 import 'package:islam200qa/constants.dart';
 import 'package:islam200qa/utils/screen_utils.dart';
+import 'package:islam200qa/utils/section_utils.dart';
 import 'package:islam200qa/utils/string_utils.dart';
 import 'package:islam200qa/widgets/copy_button.dart';
 import 'package:islam200qa/widgets/footnotes_card.dart';
@@ -14,8 +14,10 @@ import 'package:islam200qa/widgets/title_card.dart';
 import 'package:sprintf/sprintf.dart';
 
 class SectionPage extends StatefulWidget {
-  const SectionPage({Key? key, @pathParam required this.sectionId})
-      : super(key: key);
+  const SectionPage({
+    Key? key,
+    @pathParam required this.sectionId,
+  }) : super(key: key);
 
   final int sectionId;
 
@@ -26,66 +28,64 @@ class SectionPage extends StatefulWidget {
 class _SectionPageState extends State<SectionPage> {
   final List<Widget> _content = [];
 
-  Future<List<String>> _getSectionParagraphs(final int sectionId) async {
-    final String filePath = sprintf('data/sections/%d.txt', [sectionId]);
-    return await rootBundle
-        .loadString(filePath)
-        .then((section) => section.split('\n'));
-  }
+  Widget _buildNavigationButton(
+    final int sectionId,
+    final Function() predicate,
+    final int change,
+    final String text,
+  ) {
+    Null Function()? onPressCallback;
 
-  Widget _getPreviousButton(final int sectionId) {
-    var onPressCallback;
-
-    if (sectionId - 1 >= 1) {
+    if (predicate()) {
       onPressCallback = () {
-        AutoRouter.of(context).push(SectionRoute(sectionId: sectionId - 1));
+        AutoRouter.of(context).push(
+          SectionRoute(sectionId: sectionId + change),
+        );
       };
     }
 
     return ElevatedButton(
       onPressed: onPressCallback,
-      child: const Text('السابق'),
+      child: Text(text),
     );
   }
 
-  Widget _getNextButton(final int sectionId) {
-    var onPressCallback;
-
-    if (sectionId + 1 <= lastSection) {
-      onPressCallback = () {
-        AutoRouter.of(context).push(SectionRoute(sectionId: sectionId + 1));
-      };
-    }
-
-    return ElevatedButton(
-      onPressed: onPressCallback,
-      child: const Text('التالي'),
-    );
-  }
-
-  Widget _getPreviousNextButtonsRow(final int sectionId) {
+  Widget _buildNavigationRow(final int sectionId) {
     return Row(
       children: [
         Expanded(
           child: Align(
             alignment: Alignment.topRight,
-            child: _getPreviousButton(sectionId),
+            child: _buildNavigationButton(
+              sectionId,
+              () => sectionId - 1 >= 1,
+              -1,
+              'السابق',
+            ),
           ),
         ),
         Expanded(
           child: Center(
             child: Text(
-              sprintf('%s/%s', [
-                arabizeNumbers(lastSection.toString()),
-                arabizeNumbers(sectionId.toString()),
-              ]),
+              sprintf(
+                '%s/%s',
+                [
+                  arabizeNumbers(lastSection.toString()),
+                  arabizeNumbers(sectionId.toString()),
+                ],
+              ),
             ),
           ),
         ),
         Expanded(
           child: Align(
             alignment: Alignment.topLeft,
-            child: _getNextButton(sectionId),
+            child: _buildNavigationButton(
+              sectionId,
+              () => sectionId + 1 <= lastSection,
+              1,
+              'التالي',
+            ),
           ),
         ),
         const SizedBox(height: 50),
@@ -94,11 +94,9 @@ class _SectionPageState extends State<SectionPage> {
   }
 
   void _loadSection(final int sectionId) {
-    _getSectionParagraphs(sectionId).then(
+    getSectionParagraphs(sectionId).then(
       (paragraphs) {
-        _content.clear();
-
-        _content.add(_getPreviousNextButtonsRow(sectionId));
+        _content.add(_buildNavigationRow(sectionId));
 
         _content.add(TitleCard(paragraph: paragraphs[0]));
 
@@ -139,11 +137,10 @@ class _SectionPageState extends State<SectionPage> {
   void initState() {
     super.initState();
     _loadSection(widget.sectionId);
-    setState(() {});
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     double horizontalPaddingPercentage =
         getHorizontalPaddingPercentageByScreenSize(getScreenSize(context));
 

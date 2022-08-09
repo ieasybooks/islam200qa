@@ -3,14 +3,17 @@ import 'package:share_plus/share_plus.dart';
 import 'package:sprintf/sprintf.dart';
 
 class ShareButton extends StatelessWidget {
-  const ShareButton({Key? key, required this.title, required this.sectionId})
-      : super(key: key);
+  const ShareButton({
+    Key? key,
+    required this.title,
+    required this.sectionId,
+  }) : super(key: key);
 
   final String title;
   final int sectionId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Align(
       alignment: Alignment.topRight,
       child: GestureDetector(

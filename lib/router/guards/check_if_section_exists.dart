@@ -4,11 +4,11 @@ import 'package:islam200qa/router/routes.gr.dart';
 
 class CheckIfSectionExists extends AutoRouteGuard {
   @override
-  void onNavigation(NavigationResolver resolver, StackRouter router) async {
+  void onNavigation(final NavigationResolver resolver, final StackRouter router) async {
     final int sectionId = resolver.route.pathParams.getInt('sectionId');
 
     if (sectionId >= 1 && sectionId <= lastSection) {
-      resolver.next(true); // book was found. proceed to the page
+      resolver.next(true);
     } else {
       router.push(SectionRoute(sectionId: 1));
     }

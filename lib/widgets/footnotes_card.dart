@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class FootnotesCard extends StatelessWidget {
-  const FootnotesCard({Key? key, required this.footnotes}) : super(key: key);
+  const FootnotesCard({
+    Key? key,
+    required this.footnotes,
+  }) : super(key: key);
 
   final List<String> footnotes;
 
@@ -24,7 +27,7 @@ class FootnotesCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
         hoverColor: Colors.transparent,
@@ -39,11 +42,11 @@ class FootnotesCard extends StatelessWidget {
         horizontalTitleGap: 0.0,
         minLeadingWidth: 0,
         child: ExpansionTile(
-          tilePadding: const EdgeInsets.only(right: 0.0),
           backgroundColor: Colors.transparent,
           collapsedBackgroundColor: Colors.transparent,
           iconColor: Colors.transparent,
           collapsedIconColor: Colors.transparent,
+          tilePadding: const EdgeInsets.only(right: 0.0),
           childrenPadding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
           expandedAlignment: Alignment.topRight,
           expandedCrossAxisAlignment: CrossAxisAlignment.start,

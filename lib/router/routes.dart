@@ -1,26 +1,27 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:islam200qa/pages/section.dart';
-import 'package:islam200qa/pages/sections.dart';
+import 'package:islam200qa/pages/section_page.dart';
+import 'package:islam200qa/pages/sections_page.dart';
 import 'package:islam200qa/router/guards/check_if_section_exists.dart';
 
 @MaterialAutoRouter(
   replaceInRouteName: 'Page,Route',
   routes: <AutoRoute>[
     CustomRoute(
-        path: '/',
-        page: SectionsPage,
-        customRouteBuilder: sectionsCustomRouteBuilder,
-        initial: true,
-        children: [
-          RedirectRoute(path: '', redirectTo: '1'),
-          CustomRoute(
-            path: ':sectionId',
-            page: SectionPage,
-            customRouteBuilder: sectionsCustomRouteBuilder,
-            guards: [CheckIfSectionExists],
-          ),
-        ]),
+      path: '/',
+      page: SectionsPage,
+      customRouteBuilder: sectionsCustomRouteBuilder,
+      initial: true,
+      children: [
+        RedirectRoute(path: '', redirectTo: '1'),
+        CustomRoute(
+          path: ':sectionId',
+          page: SectionPage,
+          customRouteBuilder: sectionsCustomRouteBuilder,
+          guards: [CheckIfSectionExists],
+        ),
+      ],
+    ),
   ],
 )
 class $AppRouter {}
