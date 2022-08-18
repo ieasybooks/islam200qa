@@ -28,16 +28,16 @@ class ShareButton extends StatelessWidget {
             ),
           );
         },
-        child: const Text.rich(
+        child: Text.rich(
           TextSpan(
             children: [
               WidgetSpan(
                 child: Icon(
                   Icons.share,
-                  color: Colors.green,
+                  color: Theme.of(context).primaryColor,
                 ),
               ),
-              TextSpan(
+              const TextSpan(
                 text: ' شارك',
                 style: TextStyle(fontSize: 14),
               ),

@@ -33,17 +33,19 @@ dependencies:
     sdk: flutter
   auto_route: 4.2.1
   sprintf:
+  share_plus: ^4.0.10
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  share_plus: ^4.0.10
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   auto_route_generator: 4.2.0
   build_runner:
+  flutter_launcher_icons: ^0.10.0
+  flutter_native_splash: ^2.2.7
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -100,3 +102,14 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/icon/icon.png"
+  web:
+    generate: true
+    image_path: "assets/icon/icon.jpg"
+    background_color: "#ffffff"
+    theme_color: "#ffffff"

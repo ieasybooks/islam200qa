@@ -37,16 +37,16 @@ class CopyButton extends StatelessWidget {
               ),
             );
           },
-          child: const Text.rich(
+          child: Text.rich(
             TextSpan(
               children: [
                 WidgetSpan(
                   child: Icon(
                     Icons.copy,
-                    color: Colors.green,
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
-                TextSpan(
+                const TextSpan(
                   text: ' نسخ المتحوى',
                   style: TextStyle(fontSize: 14),
                 ),

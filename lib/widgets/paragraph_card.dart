@@ -14,16 +14,16 @@ class ParagraphCard extends StatelessWidget {
     int coloringDepth = 0;
 
     return Card(
-      elevation: 2,
-      shape: const RoundedRectangleBorder(
-        side: BorderSide(color: Colors.lightGreen),
-        borderRadius: BorderRadius.all(Radius.circular(5)),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: Theme.of(context).primaryColor),
+        borderRadius: const BorderRadius.all(Radius.circular(5)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SizedBox(
           width: getDeviceWidth(context),
-          child: SelectableText.rich(
+          child: Text.rich(
             TextSpan(
               children: paragraph.split(' ').map(
                 (word) {
@@ -34,9 +34,9 @@ class ParagraphCard extends StatelessWidget {
                   if (word == 'س:' || word == 'جـ:') {
                     return TextSpan(
                       text: '$word ',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 24,
-                        color: Colors.green,
+                        color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.bold,
                       ),
                     );
@@ -47,9 +47,9 @@ class ParagraphCard extends StatelessWidget {
 
                     return TextSpan(
                       text: '$word ',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 24,
-                        color: Colors.green,
+                        color: Theme.of(context).primaryColor,
                       ),
                     );
                   } else {

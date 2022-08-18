@@ -84,10 +84,10 @@ class _SectionsPageState extends State<SectionsPage> {
           controller: ScrollController(),
           padding: EdgeInsets.zero,
           children: <Widget>[
-                const DrawerHeader(
-                  decoration: BoxDecoration(color: Colors.green),
-                  margin: EdgeInsets.only(bottom: 0.0),
-                  child: Text(
+                DrawerHeader(
+                  decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+                  margin: const EdgeInsets.only(bottom: 0.0),
+                  child: const Text(
                     'المحتويات',
                     style: TextStyle(color: Colors.white),
                   ),

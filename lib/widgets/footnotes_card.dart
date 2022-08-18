@@ -8,7 +8,10 @@ class FootnotesCard extends StatelessWidget {
 
   final List<String> footnotes;
 
-  List<TextSpan> _buildFootnoteText(final String footnote) {
+  List<TextSpan> _buildFootnoteText(
+    final BuildContext context,
+    final String footnote,
+  ) {
     int firstSpaceIndex = footnote.indexOf(' ');
 
     String footnoteNumber = footnote.substring(0, firstSpaceIndex);
@@ -17,8 +20,8 @@ class FootnotesCard extends StatelessWidget {
     return [
       TextSpan(
         text: footnoteNumber,
-        style: const TextStyle(
-          color: Colors.green,
+        style: TextStyle(
+          color: Theme.of(context).primaryColor,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -50,16 +53,16 @@ class FootnotesCard extends StatelessWidget {
           childrenPadding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
           expandedAlignment: Alignment.topRight,
           expandedCrossAxisAlignment: CrossAxisAlignment.start,
-          title: const Text.rich(
+          title: Text.rich(
             TextSpan(
               children: [
                 WidgetSpan(
                   child: Icon(
                     Icons.list_alt_rounded,
-                    color: Colors.green,
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
-                TextSpan(
+                const TextSpan(
                   text: ' الحواشي (إضغط للإظهار)',
                   style: TextStyle(fontSize: 14),
                 ),
@@ -70,8 +73,8 @@ class FootnotesCard extends StatelessWidget {
               .map(
                 (footnote) => Padding(
                   padding: const EdgeInsets.only(bottom: 10),
-                  child: SelectableText.rich(
-                    TextSpan(children: _buildFootnoteText(footnote)),
+                  child: Text.rich(
+                    TextSpan(children: _buildFootnoteText(context, footnote)),
                     textAlign: TextAlign.justify,
                   ),
                 ),

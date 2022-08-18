@@ -32,8 +32,8 @@ class IndexSingleSection extends StatelessWidget {
                   ),
                 ],
               ),
-              style: const TextStyle(
-                color: Colors.green,
+              style: TextStyle(
+                color: Theme.of(context).primaryColor,
                 fontWeight: FontWeight.bold,
               ),
             ),

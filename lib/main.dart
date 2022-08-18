@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:islam200qa/palette.dart';
 import 'package:islam200qa/router/guards/check_if_section_exists.dart';
 import 'package:islam200qa/strategies/url_strategy.dart';
 
@@ -28,7 +29,7 @@ class Islam200QaApp extends StatelessWidget {
       title: 'الإسلام في ٢٠٠ سؤال وجواب',
       theme: ThemeData(
         fontFamily: 'Amiri',
-        primarySwatch: Colors.green,
+        primarySwatch: Palette.brown,
       ),
     );
   }

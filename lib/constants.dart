@@ -210,7 +210,7 @@ List<IndexSectionModel> index = [
     ],
   ),
   IndexSectionsCombinerModel(
-    title: 'الكفر',
+    title: 'الكفر وأنواعه',
     children: [
       const IndexSingleSectionModel(
         sectionId: 153,

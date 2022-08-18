@@ -12,13 +12,13 @@ class TitleCard extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     return Card(
-      elevation: 2,
-      color: Colors.green,
+      elevation: 0,
+      color: Theme.of(context).primaryColor,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SizedBox(
           width: getDeviceWidth(context),
-          child: SelectableText(
+          child: Text(
             paragraph,
             textAlign: TextAlign.center,
             style: const TextStyle(
