@@ -1,16 +1,19 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:islam200qa/keys_to_be_inherited.dart';
 import 'package:islam200qa/router/routes.gr.dart';
 import 'package:islam200qa/constants.dart';
 import 'package:islam200qa/utils/screen_utils.dart';
 import 'package:islam200qa/utils/section_utils.dart';
+import 'package:islam200qa/utils/shared_preferences_utils.dart';
 import 'package:islam200qa/utils/string_utils.dart';
 import 'package:islam200qa/widgets/copy_button.dart';
 import 'package:islam200qa/widgets/footnotes_card.dart';
 import 'package:islam200qa/widgets/paragraph_card.dart';
 import 'package:islam200qa/widgets/share_button.dart';
 import 'package:islam200qa/widgets/title_card.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:sprintf/sprintf.dart';
 
 class SectionPage extends StatefulWidget {
@@ -26,6 +29,10 @@ class SectionPage extends StatefulWidget {
 }
 
 class _SectionPageState extends State<SectionPage> {
+  final GlobalKey _navigationKey = GlobalKey();
+  final GlobalKey _footerKey = GlobalKey();
+  final GlobalKey _finishKey = GlobalKey();
+
   final List<Widget> _content = [];
 
   Widget _buildNavigationButton(
@@ -51,51 +58,68 @@ class _SectionPageState extends State<SectionPage> {
   }
 
   Widget _buildNavigationRow(final int sectionId) {
-    return Row(
-      children: [
-        Expanded(
-          child: Align(
-            alignment: Alignment.topRight,
-            child: _buildNavigationButton(
-              sectionId,
-              () => sectionId - 1 >= 1,
-              -1,
-              'السابق',
-            ),
-          ),
-        ),
-        Expanded(
-          child: Center(
-            child: Text(
-              sprintf(
-                '%s/%s',
-                [
-                  arabizeNumbers(lastSection.toString()),
-                  arabizeNumbers(sectionId.toString()),
-                ],
+    return Showcase(
+      overlayPadding: const EdgeInsets.symmetric(horizontal: 5.0),
+      key: _navigationKey,
+      title: 'التنقّل',
+      description:
+          'يمكنك الإنتقال بين الأسئلة من خلال الضغط على رز "السابق" و"التالي"',
+      child: Row(
+        children: [
+          Expanded(
+            child: Align(
+              alignment: Alignment.topRight,
+              child: _buildNavigationButton(
+                sectionId,
+                () => sectionId - 1 >= 1,
+                -1,
+                'السابق',
               ),
             ),
           ),
-        ),
-        Expanded(
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: _buildNavigationButton(
-              sectionId,
-              () => sectionId + 1 <= lastSection,
-              1,
-              'التالي',
+          Expanded(
+            child: Center(
+              child: Text(
+                sprintf(
+                  '%s/%s',
+                  [
+                    arabizeNumbers(lastSection.toString()),
+                    arabizeNumbers(sectionId.toString()),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 50),
-      ],
+          Expanded(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: _buildNavigationButton(
+                sectionId,
+                () => sectionId + 1 <= lastSection,
+                1,
+                'التالي',
+              ),
+            ),
+          ),
+          const SizedBox(height: 50),
+        ],
+      ),
     );
   }
 
   void _loadSection(final int sectionId) {
     getSectionParagraphs(sectionId).then(
       (paragraphs) {
+        _content.add(
+          Showcase(
+            overlayPadding: const EdgeInsets.symmetric(horizontal: 5.0),
+            key: _finishKey,
+            description: 'وفّقك الله لما يُحب ويرضى ونفعك بما ستقرأ',
+            showArrow: false,
+            child: const SizedBox(height: 0),
+          ),
+        );
+
         _content.add(_buildNavigationRow(sectionId));
 
         _content.add(TitleCard(paragraph: paragraphs[0]));
@@ -114,19 +138,32 @@ class _SectionPageState extends State<SectionPage> {
           },
         );
 
+        List<Widget> c = [];
+
         if (footnotes.isNotEmpty) {
-          _content.add(FootnotesCard(footnotes: footnotes));
+          c.add(FootnotesCard(footnotes: footnotes));
         } else {
           _content.add(const SizedBox(height: 10));
         }
 
         if (!kIsWeb) {
-          _content.add(ShareButton(title: paragraphs[0], sectionId: sectionId));
-          _content.add(const SizedBox(height: 10));
+          c.add(ShareButton(title: paragraphs[0], sectionId: sectionId));
+          c.add(const SizedBox(height: 10));
         }
 
-        _content.add(CopyButton(paragraphs: paragraphs, sectionId: sectionId));
-        _content.add(const SizedBox(height: 5));
+        c.add(CopyButton(paragraphs: paragraphs, sectionId: sectionId));
+        c.add(const SizedBox(height: 5));
+
+        _content.add(
+          Showcase(
+            overlayPadding: const EdgeInsets.symmetric(horizontal: 5.0),
+            key: _footerKey,
+            title: 'الخيارات',
+            description:
+                'يمكنك عرض الحواشي، مشاركة الأسئلة ونسخ محتوياتها من خلال الخيارات الموجودة في هذه المنطقة',
+            child: Column(children: c),
+          ),
+        );
 
         setState(() {});
       },
@@ -141,6 +178,21 @@ class _SectionPageState extends State<SectionPage> {
 
   @override
   Widget build(final BuildContext context) {
+    getDisplayShowCase().then(
+      (status) {
+        if (status) {
+          ShowCaseWidget.of(context).startShowCase(
+            [
+              KeysToBeInherited.of(context).indexKey,
+              _navigationKey,
+              _footerKey,
+              _finishKey,
+            ],
+          );
+        }
+      },
+    );
+
     double horizontalPaddingPercentage =
         getHorizontalPaddingPercentageByScreenSize(getScreenSize(context));
 

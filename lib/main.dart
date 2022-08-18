@@ -16,7 +16,7 @@ class Islam200QaApp extends StatelessWidget {
   final _appRouter = AppRouter(checkIfSectionExists: CheckIfSectionExists());
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(final BuildContext context) {
     return MaterialApp.router(
       routerDelegate: _appRouter.delegate(),
       routeInformationParser: _appRouter.defaultRouteParser(),
