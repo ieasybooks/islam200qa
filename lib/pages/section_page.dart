@@ -63,7 +63,7 @@ class _SectionPageState extends State<SectionPage> {
       key: _navigationKey,
       title: 'التنقّل',
       description:
-          'يمكنك الإنتقال بين الأسئلة من خلال الضغط على رز "السابق" و"التالي"',
+          'يمكنك الإنتقال بين الأسئلة من خلال الضغط على رز "السابق" و"التالي"، أو من خلال سحب الشاشة يمينًا ويسارًا',
       child: Row(
         children: [
           Expanded(
@@ -196,15 +196,32 @@ class _SectionPageState extends State<SectionPage> {
     double horizontalPaddingPercentage =
         getHorizontalPaddingPercentageByScreenSize(getScreenSize(context));
 
-    return SingleChildScrollView(
-      child: Container(
-        margin: EdgeInsets.fromLTRB(
-          getDeviceWidth(context) * horizontalPaddingPercentage,
-          10.0,
-          getDeviceWidth(context) * horizontalPaddingPercentage,
-          10.0,
+    return GestureDetector(
+      onHorizontalDragUpdate: (details) {
+        if (details.delta.dx > 8) {
+          if (widget.sectionId + 1 < lastSection) {
+            AutoRouter.of(context).push(
+              SectionRoute(sectionId: widget.sectionId + 1),
+            );
+          }
+        } else if (details.delta.dx < -8) {
+          if (widget.sectionId - 1 > 0) {
+            AutoRouter.of(context).push(
+              SectionRoute(sectionId: widget.sectionId - 1),
+            );
+          }
+        }
+      },
+      child: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(
+            getDeviceWidth(context) * horizontalPaddingPercentage,
+            10.0,
+            getDeviceWidth(context) * horizontalPaddingPercentage,
+            10.0,
+          ),
+          child: Column(children: _content),
         ),
-        child: Column(children: _content),
       ),
     );
   }
