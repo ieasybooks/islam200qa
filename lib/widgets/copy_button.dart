@@ -11,7 +11,7 @@ class CopyButton extends StatelessWidget {
                 [
                   '',
                   sprintf(
-                    'https://islam200qa.netlify.app/%d',
+                    'https://islam200qa.com/%d',
                     [sectionId],
                   ),
                 ])

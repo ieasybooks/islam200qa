@@ -20,7 +20,7 @@ class ShareButton extends StatelessWidget {
         onTap: () {
           Share.share(
             sprintf(
-              'الإسلام في 200 سؤال وجواب: %s\n\nhttps://islam200qa.netlify.app/%d',
+              'الإسلام في 200 سؤال وجواب: %s\n\nhttps://islam200qa.com/%d',
               [
                 title,
                 sectionId,
