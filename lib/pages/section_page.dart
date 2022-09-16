@@ -14,6 +14,7 @@ import 'package:islam200qa/widgets/footnotes_card.dart';
 import 'package:islam200qa/widgets/paragraph_card.dart';
 import 'package:islam200qa/widgets/share_button.dart';
 import 'package:islam200qa/widgets/title_card.dart';
+import 'package:islam200qa/widgets/website_button.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:sprintf/sprintf.dart';
 
@@ -154,6 +155,10 @@ class _SectionPageState extends State<SectionPage> {
 
         c.add(CopyButton(paragraphs: paragraphs, sectionId: sectionId));
         c.add(const SizedBox(height: 5));
+
+        if (sectionId == 1) {
+          c.add(const WebsiteButton());
+        }
 
         _content.add(
           Showcase(

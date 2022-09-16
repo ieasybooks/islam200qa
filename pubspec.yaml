@@ -38,6 +38,7 @@ dependencies:
   shared_preferences:
   flutter_markdown: ^0.6.9
   flutter_native_splash: ^2.2.7
+  url_launcher: 6.1.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
