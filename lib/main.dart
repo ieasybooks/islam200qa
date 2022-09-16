@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:islam200qa/palette.dart';
 import 'package:islam200qa/router/guards/check_if_section_exists.dart';
 import 'package:islam200qa/strategies/url_strategy.dart';
@@ -6,6 +7,8 @@ import 'package:islam200qa/strategies/url_strategy.dart';
 import 'router/routes.gr.dart';
 
 void main() {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   usePathUrlStrategy();
   runApp(Islam200QaApp());
 }

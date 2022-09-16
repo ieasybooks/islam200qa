@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:islam200qa/keys_to_be_inherited.dart';
 import 'package:islam200qa/router/routes.gr.dart';
 import 'package:islam200qa/constants.dart';
@@ -165,7 +166,9 @@ class _SectionPageState extends State<SectionPage> {
           ),
         );
 
-        setState(() {});
+        setState(() {
+          FlutterNativeSplash.remove();
+        });
       },
     );
   }

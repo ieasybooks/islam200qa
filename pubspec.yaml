@@ -36,6 +36,8 @@ dependencies:
   share_plus: ^4.0.10
   showcaseview: 1.1.8
   shared_preferences:
+  flutter_markdown: ^0.6.9
+  flutter_native_splash: ^2.2.7
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -47,7 +49,6 @@ dev_dependencies:
   auto_route_generator: 4.2.0
   build_runner:
   flutter_launcher_icons: ^0.10.0
-  flutter_native_splash: ^2.2.7
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
