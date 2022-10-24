@@ -124,7 +124,9 @@ class _SectionPageState extends State<SectionPage> {
 
         _content.add(_buildNavigationRow(sectionId));
 
-        _content.add(TitleCard(paragraph: paragraphs[0]));
+        List<Widget> selectableWidgets = [];
+
+        selectableWidgets.add(TitleCard(paragraph: paragraphs[0]));
 
         bool isParagraph = true;
         List<String> footnotes = [];
@@ -133,31 +135,33 @@ class _SectionPageState extends State<SectionPage> {
             if (paragraph.isEmpty) {
               isParagraph = false;
             } else if (isParagraph) {
-              _content.add(ParagraphCard(paragraph: paragraph));
+              selectableWidgets.add(ParagraphCard(paragraph: paragraph));
             } else {
               footnotes.add(paragraph);
             }
           },
         );
 
-        List<Widget> c = [];
+        _content.add(SelectionArea(child: Column(children: selectableWidgets)));
+
+        List<Widget> buttons = [];
 
         if (footnotes.isNotEmpty) {
-          c.add(FootnotesCard(footnotes: footnotes));
+          buttons.add(FootnotesCard(footnotes: footnotes));
         } else {
           _content.add(const SizedBox(height: 10));
         }
 
         if (!kIsWeb) {
-          c.add(ShareButton(title: paragraphs[0], sectionId: sectionId));
-          c.add(const SizedBox(height: 10));
+          buttons.add(ShareButton(title: paragraphs[0], sectionId: sectionId));
+          buttons.add(const SizedBox(height: 10));
         }
 
-        c.add(CopyButton(paragraphs: paragraphs, sectionId: sectionId));
-        c.add(const SizedBox(height: 5));
+        buttons.add(CopyButton(paragraphs: paragraphs, sectionId: sectionId));
+        buttons.add(const SizedBox(height: 5));
 
         if (sectionId == 1) {
-          c.add(const WebsiteButton());
+          buttons.add(const WebsiteButton());
         }
 
         _content.add(
@@ -167,7 +171,7 @@ class _SectionPageState extends State<SectionPage> {
             title: 'الخيارات',
             description:
                 'يمكنك عرض الحواشي، مشاركة الأسئلة ونسخ محتوياتها من خلال الخيارات الموجودة في هذه المنطقة',
-            child: Column(children: c),
+            child: Column(children: buttons),
           ),
         );
 
