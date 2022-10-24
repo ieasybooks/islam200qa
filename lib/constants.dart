@@ -15,10 +15,7 @@ List<IndexSectionModel> index = [
   IndexMultiSectionsModel(
     title: 'أول ما يجب على الانسان والغاية من وجوده',
     startSection: 2,
-    endSection: 11,
-  ),
-  const IndexSingleSectionModel(
-    sectionId: 12,
+    endSection: 12,
   ),
   IndexSectionsCombinerModel(
     title: 'مراتب الدين',

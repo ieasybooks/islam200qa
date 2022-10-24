@@ -24,7 +24,7 @@ class IndexSingleSection extends StatelessWidget {
         TextSpan(
           children: [
             TextSpan(
-              text: sprintf(
+              text: [1, lastSection].contains(indexSingleSectionModel.sectionId) ? '' : sprintf(
                 '%s. ',
                 [
                   arabizeNumbers(
