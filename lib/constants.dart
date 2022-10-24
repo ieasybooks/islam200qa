@@ -298,20 +298,10 @@ List<IndexSectionModel> index = [
     startSection: 196,
     endSection: 206,
   ),
-  const IndexSingleSectionModel(
-    sectionId: 207,
-  ),
-  const IndexSingleSectionModel(
-    sectionId: 208,
-  ),
-  const IndexSingleSectionModel(
-    sectionId: 209,
-  ),
-  const IndexSingleSectionModel(
-    sectionId: 210,
-  ),
-  const IndexSingleSectionModel(
-    sectionId: 211,
+  IndexMultiSectionsModel(
+    title: 'متفرقات',
+    startSection: 207,
+    endSection: 211,
   ),
   const IndexSingleSectionModel(
     sectionId: 212,
