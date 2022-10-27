@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class KeysToBeInherited extends InheritedWidget {
   final GlobalKey indexKey;
+  final GlobalKey bookmarkKey;
 
   const KeysToBeInherited({
     Key? key,
     required this.indexKey,
+    required this.bookmarkKey,
     required Widget child,
   }) : super(key: key, child: child);
 

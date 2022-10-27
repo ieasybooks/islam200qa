@@ -126,7 +126,12 @@ class _SectionPageState extends State<SectionPage> {
 
         List<Widget> selectableWidgets = [];
 
-        selectableWidgets.add(TitleCard(paragraph: paragraphs[0]));
+        selectableWidgets.add(
+          TitleCard(
+            sectionId: sectionId,
+            paragraph: paragraphs[0],
+          ),
+        );
 
         bool isParagraph = true;
         List<String> footnotes = [];
@@ -198,6 +203,7 @@ class _SectionPageState extends State<SectionPage> {
               KeysToBeInherited.of(context).indexKey,
               _navigationKey,
               _footerKey,
+              KeysToBeInherited.of(context).bookmarkKey,
               _finishKey,
             ],
           );

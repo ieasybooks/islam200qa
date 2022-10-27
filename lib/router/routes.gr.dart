@@ -17,16 +17,20 @@ import 'package:flutter/material.dart' as _i5;
 import '../pages/privacy_page.dart' as _i1;
 import '../pages/section_page.dart' as _i3;
 import '../pages/sections_page.dart' as _i2;
-import 'guards/check_if_section_exists.dart' as _i6;
-import 'routes.dart' as _i7;
+import 'guards/check_if_section_exists.dart' as _i7;
+import 'guards/redirect_to_bookmark.dart' as _i6;
+import 'routes.dart' as _i8;
 
 class AppRouter extends _i4.RootStackRouter {
   AppRouter(
       {_i5.GlobalKey<_i5.NavigatorState>? navigatorKey,
+      required this.redirectToBookmark,
       required this.checkIfSectionExists})
       : super(navigatorKey);
 
-  final _i6.CheckIfSectionExists checkIfSectionExists;
+  final _i6.RedirectToBookmark redirectToBookmark;
+
+  final _i7.CheckIfSectionExists checkIfSectionExists;
 
   @override
   final Map<String, _i4.PageFactory> pagesMap = {
@@ -34,11 +38,19 @@ class AppRouter extends _i4.RootStackRouter {
       return _i4.MaterialPageX<dynamic>(
           routeData: routeData, child: const _i1.PrivacyPage());
     },
-    SectionsRoute.name: (routeData) {
+    SectionsPageParent.name: (routeData) {
       return _i4.CustomPage<dynamic>(
           routeData: routeData,
           child: const _i2.SectionsPage(),
-          customRouteBuilder: _i7.sectionsCustomRouteBuilder,
+          customRouteBuilder: _i8.sectionsCustomRouteBuilder,
+          opaque: true,
+          barrierDismissible: false);
+    },
+    SectionsPageChild.name: (routeData) {
+      return _i4.CustomPage<dynamic>(
+          routeData: routeData,
+          child: const _i2.SectionsPage(),
+          customRouteBuilder: _i8.sectionsCustomRouteBuilder,
           opaque: true,
           barrierDismissible: false);
     },
@@ -50,7 +62,7 @@ class AppRouter extends _i4.RootStackRouter {
       return _i4.CustomPage<dynamic>(
           routeData: routeData,
           child: _i3.SectionPage(key: args.key, sectionId: args.sectionId),
-          customRouteBuilder: _i7.sectionsCustomRouteBuilder,
+          customRouteBuilder: _i8.sectionsCustomRouteBuilder,
           opaque: true,
           barrierDismissible: false);
     }
@@ -59,15 +71,14 @@ class AppRouter extends _i4.RootStackRouter {
   @override
   List<_i4.RouteConfig> get routes => [
         _i4.RouteConfig(PrivacyRoute.name, path: '/privacy'),
-        _i4.RouteConfig(SectionsRoute.name, path: '/', children: [
-          _i4.RouteConfig('#redirect',
+        _i4.RouteConfig(SectionsPageParent.name, path: '/', children: [
+          _i4.RouteConfig(SectionsPageChild.name,
               path: '',
-              parent: SectionsRoute.name,
-              redirectTo: '1',
-              fullMatch: true),
+              parent: SectionsPageParent.name,
+              guards: [redirectToBookmark]),
           _i4.RouteConfig(SectionRoute.name,
               path: ':sectionId',
-              parent: SectionsRoute.name,
+              parent: SectionsPageParent.name,
               guards: [checkIfSectionExists])
         ])
       ];
@@ -83,11 +94,19 @@ class PrivacyRoute extends _i4.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i2.SectionsPage]
-class SectionsRoute extends _i4.PageRouteInfo<void> {
-  const SectionsRoute({List<_i4.PageRouteInfo>? children})
-      : super(SectionsRoute.name, path: '/', initialChildren: children);
+class SectionsPageParent extends _i4.PageRouteInfo<void> {
+  const SectionsPageParent({List<_i4.PageRouteInfo>? children})
+      : super(SectionsPageParent.name, path: '/', initialChildren: children);
 
-  static const String name = 'SectionsRoute';
+  static const String name = 'SectionsPageParent';
+}
+
+/// generated route for
+/// [_i2.SectionsPage]
+class SectionsPageChild extends _i4.PageRouteInfo<void> {
+  const SectionsPageChild() : super(SectionsPageChild.name, path: '');
+
+  static const String name = 'SectionsPageChild';
 }
 
 /// generated route for

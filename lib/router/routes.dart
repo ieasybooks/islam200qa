@@ -4,18 +4,26 @@ import 'package:islam200qa/pages/privacy_page.dart';
 import 'package:islam200qa/pages/section_page.dart';
 import 'package:islam200qa/pages/sections_page.dart';
 import 'package:islam200qa/router/guards/check_if_section_exists.dart';
+import 'package:islam200qa/router/guards/redirect_to_bookmark.dart';
 
 @MaterialAutoRouter(
   replaceInRouteName: 'Page,Route',
   routes: <AutoRoute>[
     AutoRoute(path: '/privacy', page: PrivacyPage),
     CustomRoute(
+      name: 'SectionsPageParent',
       path: '/',
       page: SectionsPage,
       customRouteBuilder: sectionsCustomRouteBuilder,
       initial: true,
       children: [
-        RedirectRoute(path: '', redirectTo: '1'),
+        CustomRoute(
+          name: 'SectionsPageChild',
+          path: '',
+          page: SectionsPage,
+          guards: [RedirectToBookmark],
+          customRouteBuilder: sectionsCustomRouteBuilder,
+        ),
         CustomRoute(
           path: ':sectionId',
           page: SectionPage,

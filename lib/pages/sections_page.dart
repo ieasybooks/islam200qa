@@ -17,6 +17,7 @@ class SectionsPage extends StatefulWidget {
 
 class _SectionsPageState extends State<SectionsPage> {
   final GlobalKey _indexKey = GlobalKey();
+  final GlobalKey _bookmarkKey = GlobalKey();
 
   final List<Widget> _indexContent = [];
   final List<Widget> _fullIndexContent = [];
@@ -70,6 +71,7 @@ class _SectionsPageState extends State<SectionsPage> {
   Widget build(final BuildContext context) {
     return KeysToBeInherited(
       indexKey: _indexKey,
+      bookmarkKey: _bookmarkKey,
       child: ShowCaseWidget(
         enableAutoScroll: true,
         builder: Builder(
