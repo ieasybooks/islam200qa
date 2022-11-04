@@ -14,6 +14,7 @@ import 'package:islam200qa/widgets/footnotes_card.dart';
 import 'package:islam200qa/widgets/paragraph_card.dart';
 import 'package:islam200qa/widgets/share_button.dart';
 import 'package:islam200qa/widgets/title_card.dart';
+import 'package:islam200qa/widgets/video_card.dart';
 import 'package:islam200qa/widgets/website_button.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:sprintf/sprintf.dart';
@@ -34,6 +35,7 @@ class _SectionPageState extends State<SectionPage> {
   final GlobalKey _navigationKey = GlobalKey();
   final GlobalKey _footerKey = GlobalKey();
   final GlobalKey _finishKey = GlobalKey();
+  final GlobalKey _bookmarkKey = GlobalKey();
 
   final List<Widget> _content = [];
 
@@ -140,7 +142,13 @@ class _SectionPageState extends State<SectionPage> {
             if (paragraph.isEmpty) {
               isParagraph = false;
             } else if (isParagraph) {
-              selectableWidgets.add(ParagraphCard(paragraph: paragraph));
+              if (paragraph.startsWith('YTV:')) {
+                selectableWidgets.add(
+                  VideoCard(videosIds: paragraph.split(':')[1].split(',')),
+                );
+              } else {
+                selectableWidgets.add(ParagraphCard(paragraph: paragraph));
+              }
             } else {
               footnotes.add(paragraph);
             }
@@ -195,6 +203,8 @@ class _SectionPageState extends State<SectionPage> {
 
   @override
   Widget build(final BuildContext context) {
+    KeysToBeInherited.of(context).bookmarkKey = _bookmarkKey;
+
     getDisplayShowCase().then(
       (status) {
         if (status) {
@@ -203,7 +213,7 @@ class _SectionPageState extends State<SectionPage> {
               KeysToBeInherited.of(context).indexKey,
               _navigationKey,
               _footerKey,
-              KeysToBeInherited.of(context).bookmarkKey,
+              _bookmarkKey,
               _finishKey,
             ],
           );

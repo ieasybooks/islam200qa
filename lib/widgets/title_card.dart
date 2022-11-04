@@ -19,9 +19,10 @@ class TitleCard extends StatefulWidget {
 
 class _TitleCardState extends State<TitleCard> {
   late final Widget _defaultBookmark = Showcase(
-    key: KeysToBeInherited.of(context).bookmarkKey,
+    key: KeysToBeInherited.of(context).bookmarkKey!,
     title: 'الحفظ والمتابعة',
-    description: 'يمكنك حفظ آخر سؤال توقفت عنده وإكمال القراءة منه لاحقا من خلال الضغط على هذا الزر',
+    description:
+        'يمكنك حفظ آخر سؤال توقفت عنده وإكمال القراءة منه لاحقا من خلال الضغط على هذا الزر',
     child: SizedBox(
       width: 50.0,
       child: RawMaterialButton(
@@ -54,39 +55,37 @@ class _TitleCardState extends State<TitleCard> {
   void _updateBookmarkButton() {
     getBookmark().then(
       (bookmark) {
-        setState(
-          () {
-            if (bookmark == widget.sectionId) {
-              _bookmarkButton = SizedBox(
-                width: 50.0,
-                child: RawMaterialButton(
-                  onPressed: () {
-                    setBookmark(-1);
-                    _updateBookmarkButton();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('تم إزالة علامة الحفظ.'),
-                        duration: Duration(milliseconds: 1000),
-                      ),
-                    );
-                  },
-                  elevation: 2,
-                  fillColor: Colors.white,
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(0),
-                  child: const SelectionContainer.disabled(
-                    child: Icon(
-                      Icons.bookmark_added,
-                      size: 25.0,
+        setState(() {
+          if (bookmark == widget.sectionId) {
+            _bookmarkButton = SizedBox(
+              width: 50.0,
+              child: RawMaterialButton(
+                onPressed: () {
+                  setBookmark(-1);
+                  _updateBookmarkButton();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('تم إزالة علامة الحفظ.'),
+                      duration: Duration(milliseconds: 1000),
                     ),
+                  );
+                },
+                elevation: 2,
+                fillColor: Colors.white,
+                shape: const CircleBorder(),
+                padding: const EdgeInsets.all(0),
+                child: const SelectionContainer.disabled(
+                  child: Icon(
+                    Icons.bookmark_added,
+                    size: 25.0,
                   ),
                 ),
-              );
-            } else {
-              _bookmarkButton = _defaultBookmark;
-            }
-          },
-        );
+              ),
+            );
+          } else {
+            _bookmarkButton = _defaultBookmark;
+          }
+        });
       },
     );
   }

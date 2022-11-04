@@ -36,15 +36,13 @@ class _IndexSectionsCombinerState extends State<IndexSectionsCombiner> {
       ),
       trailing: const SizedBox.shrink(),
       onExpansionChanged: (expanded) {
-        setState(
-          () {
-            if (expanded) {
-              _tileIcon = const Icon(Icons.keyboard_arrow_down_outlined);
-            } else {
-              _tileIcon = const Icon(Icons.keyboard_arrow_left_outlined);
-            }
-          },
-        );
+        setState(() {
+          if (expanded) {
+            _tileIcon = const Icon(Icons.keyboard_arrow_down_outlined);
+          } else {
+            _tileIcon = const Icon(Icons.keyboard_arrow_left_outlined);
+          }
+        });
       },
       children: widget.indexSectionsCombiner.children.map<Widget>(
         (indexSectionModel) {
