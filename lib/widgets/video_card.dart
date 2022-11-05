@@ -28,7 +28,7 @@ class _VideoCardState extends State<VideoCard> {
         if (widget.videosIds.length == 1) {
           _controller.cueVideoById(videoId: widget.videosIds[0]);
         } else {
-          _controller.loadPlaylist(
+          _controller.cuePlaylist(
             list: widget.videosIds,
             listType: ListType.playlist,
           );
@@ -44,10 +44,28 @@ class _VideoCardState extends State<VideoCard> {
         border: Border.all(color: Theme.of(context).primaryColor),
         borderRadius: const BorderRadius.all(Radius.circular(5)),
       ),
-      child: YoutubePlayerScaffold(
-        controller: _controller,
-        builder: (context, player) => player,
+      child: Column(
+        children: <Widget>[
+              YoutubePlayerScaffold(
+                controller: _controller,
+                builder: (context, player) => player,
+              ),
+            ] +
+            (widget.videosIds.length > 1
+                ? <Widget>[
+                    const Text(
+                      'تنبيه: يمكنك الإنتقال بين شروحات الأسئلة من خلال قائمة التشغيل.',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ]
+                : []),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.close();
+    super.dispose();
   }
 }
