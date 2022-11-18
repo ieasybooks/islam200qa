@@ -225,7 +225,7 @@ class _SectionPageState extends State<SectionPage> {
     double horizontalPaddingPercentage =
         getHorizontalPaddingPercentageByScreenSize(getScreenSize(context));
 
-    return SingleChildScrollView(
+    final Widget screenContent = SingleChildScrollView(
       child: Container(
         margin: EdgeInsets.fromLTRB(
           getDeviceWidth(context) * horizontalPaddingPercentage,
@@ -236,5 +236,28 @@ class _SectionPageState extends State<SectionPage> {
         child: Column(children: _content),
       ),
     );
+
+    if (kIsWeb) {
+      return screenContent;
+    } else {
+      return GestureDetector(
+        onHorizontalDragUpdate: (details) {
+          if (details.delta.dx > 8) {
+            if (widget.sectionId + 1 < lastSection) {
+              AutoRouter.of(context).push(
+                SectionRoute(sectionId: widget.sectionId + 1),
+              );
+            }
+          } else if (details.delta.dx < -8) {
+            if (widget.sectionId - 1 > 0) {
+              AutoRouter.of(context).push(
+                SectionRoute(sectionId: widget.sectionId - 1),
+              );
+            }
+          }
+        },
+        child: screenContent,
+      );
+    }
   }
 }
