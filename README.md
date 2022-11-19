@@ -1,6 +1,10 @@
 # الإسلام في ٢٠٠ سؤال وجواب
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/69250977-e420-4da8-959a-65ab91a758f2/deploy-status)](https://app.netlify.com/sites/islam200qa/deploys)
+<div dir="rtl">
+  <a href="https://app.netlify.com/sites/islam200qa/deploys">
+    <img src="https://api.netlify.com/api/v1/badges/69250977-e420-4da8-959a-65ab91a758f2/deploy-status"/>
+  </a>
+</div>
 
 تطبيق كِتاب أعلام السنة المنشورة لاعتقاد الطائفة الناجية المنصورة
 
