@@ -166,13 +166,11 @@ class _SectionPageState extends State<SectionPage> {
           _content.add(const SizedBox(height: 10));
         }
 
-        if (!kIsWeb) {
-          buttons.add(ShareButton(title: paragraphs[0], sectionId: sectionId));
-          buttons.add(const SizedBox(height: 10));
-        }
+        buttons.add(ShareButton(title: paragraphs[0], sectionId: sectionId));
+        buttons.add(const SizedBox(height: 10));
 
         buttons.add(CopyButton(paragraphs: paragraphs, sectionId: sectionId));
-        buttons.add(const SizedBox(height: 5));
+        buttons.add(const SizedBox(height: 10));
 
         if (sectionId == 1) {
           buttons.add(const WebsiteButton());

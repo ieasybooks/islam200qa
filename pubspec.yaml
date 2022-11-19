@@ -33,7 +33,7 @@ dependencies:
     sdk: flutter
   auto_route: 4.2.1
   sprintf:
-  share_plus: ^4.0.10
+  share_plus: ^6.3.0
   showcaseview: 1.1.8
   shared_preferences:
   flutter_markdown: ^0.6.9
