@@ -13,8 +13,8 @@ import 'package:islam200qa/widgets/copy_button.dart';
 import 'package:islam200qa/widgets/footnotes_card.dart';
 import 'package:islam200qa/widgets/paragraph_card.dart';
 import 'package:islam200qa/widgets/share_button.dart';
+import 'package:islam200qa/widgets/explanation_card.dart';
 import 'package:islam200qa/widgets/title_card.dart';
-import 'package:islam200qa/widgets/video_card.dart';
 import 'package:islam200qa/widgets/website_button.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:sprintf/sprintf.dart';
@@ -38,6 +38,18 @@ class _SectionPageState extends State<SectionPage> {
   final GlobalKey _bookmarkKey = GlobalKey();
 
   final List<Widget> _content = [];
+
+  Widget _buildExplanationCardWidget(final String paragraph) {
+    final List<String> explanationData = paragraph.split(':')[1].split(',');
+
+    assert(explanationData[0].split('=')[0] == 'YTV');
+    assert(explanationData[1].split('=')[0] == 'GDR');
+
+    return ExplanationCard(
+      videoId: explanationData[0].split('=')[1],
+      recordingId: explanationData[1].split('=')[1],
+    );
+  }
 
   Widget _buildNavigationButton(
     final int sectionId,
@@ -143,10 +155,8 @@ class _SectionPageState extends State<SectionPage> {
             if (paragraph.isEmpty) {
               isParagraph = false;
             } else if (isParagraph) {
-              if (paragraph.startsWith('YTV:')) {
-                selectableWidgets.add(
-                  VideoCard(videosIds: paragraph.split(':')[1].split(',')),
-                );
+              if (paragraph.startsWith('EXP:')) {
+                selectableWidgets.add(_buildExplanationCardWidget(paragraph));
               } else {
                 selectableWidgets.add(ParagraphCard(paragraph: paragraph));
               }
