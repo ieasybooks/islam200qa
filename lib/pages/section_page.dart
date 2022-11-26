@@ -252,12 +252,14 @@ class _SectionPageState extends State<SectionPage> {
         onHorizontalDragUpdate: (details) {
           if (details.delta.dx > 8) {
             if (widget.sectionId + 1 < lastSection) {
+              AutoRouter.of(context).popUntilRouteWithName('Root Route');
               AutoRouter.of(context).push(
                 SectionRoute(sectionId: widget.sectionId + 1),
               );
             }
           } else if (details.delta.dx < -8) {
             if (widget.sectionId - 1 > 0) {
+              AutoRouter.of(context).popUntilRouteWithName('Root Route');
               AutoRouter.of(context).push(
                 SectionRoute(sectionId: widget.sectionId - 1),
               );

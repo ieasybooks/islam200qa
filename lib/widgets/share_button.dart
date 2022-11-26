@@ -35,36 +35,39 @@ class _ShareButtonState extends State<ShareButton> {
 
   @override
   Widget build(final BuildContext context) {
-    return Align(
-      alignment: Alignment.topRight,
-      child: GestureDetector(
-        key: shareButtonKey,
-        onTap: () {
-          Share.share(
-            sprintf(
-              'الإسلام في 200 سؤال وجواب: %s\n\nhttps://islam200qa.com/%d',
-              [
-                widget.title,
-                widget.sectionId,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: Align(
+        alignment: Alignment.topRight,
+        child: GestureDetector(
+          key: shareButtonKey,
+          onTap: () {
+            Share.share(
+              sprintf(
+                'الإسلام في 200 سؤال وجواب: %s\n\nhttps://islam200qa.com/%d',
+                [
+                  widget.title,
+                  widget.sectionId,
+                ],
+              ),
+              sharePositionOrigin: shareButtonRect(),
+            );
+          },
+          child: Text.rich(
+            TextSpan(
+              children: [
+                WidgetSpan(
+                  child: Icon(
+                    Icons.share,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                const TextSpan(
+                  text: ' شارك',
+                  style: TextStyle(fontSize: 14),
+                ),
               ],
             ),
-            sharePositionOrigin: shareButtonRect(),
-          );
-        },
-        child: Text.rich(
-          TextSpan(
-            children: [
-              WidgetSpan(
-                child: Icon(
-                  Icons.share,
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
-              const TextSpan(
-                text: ' شارك',
-                style: TextStyle(fontSize: 14),
-              ),
-            ],
           ),
         ),
       ),

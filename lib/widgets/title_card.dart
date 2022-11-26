@@ -99,6 +99,7 @@ class _TitleCardState extends State<TitleCard> {
   @override
   Widget build(final BuildContext context) {
     return Card(
+      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 0.0),
       elevation: 0,
       color: Theme.of(context).primaryColor,
       child: Padding(

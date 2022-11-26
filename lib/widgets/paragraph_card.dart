@@ -14,6 +14,7 @@ class ParagraphCard extends StatelessWidget {
     int coloringDepth = 0;
 
     return Card(
+      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 0.0),
       elevation: 0,
       shape: RoundedRectangleBorder(
         side: BorderSide(color: Theme.of(context).primaryColor),

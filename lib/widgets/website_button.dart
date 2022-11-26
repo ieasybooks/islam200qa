@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:islam200qa/utils/url_utils.dart';
 
 class WebsiteButton extends StatelessWidget {
   const WebsiteButton({Key? key}) : super(key: key);
-
-  Future<void> _launchUrl(final Uri url) async {
-    if (!await launchUrl(url)) {
-      throw 'Could not launch $url';
-    }
-  }
 
   @override
   Widget build(final BuildContext context) {
@@ -18,7 +12,7 @@ class WebsiteButton extends StatelessWidget {
         alignment: Alignment.topRight,
         child: GestureDetector(
           onTap: () {
-            _launchUrl(Uri.parse('https://islam200qa.com'));
+            launchUrlWrapper(Uri.parse('https://islam200qa.com'));
           },
           child: Text.rich(
             TextSpan(

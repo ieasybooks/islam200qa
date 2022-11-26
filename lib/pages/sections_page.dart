@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:islam200qa/constants.dart';
 import 'package:islam200qa/keys_to_be_inherited.dart';
+import 'package:islam200qa/router/routes.gr.dart';
 import 'package:islam200qa/utils/string_utils.dart';
 import 'package:islam200qa/widgets/index/index_single_section.dart';
 import 'package:islam200qa/widgets/index/index_single_section_model.dart';
@@ -93,6 +94,18 @@ class _SectionsPageState extends State<SectionsPage> {
                   );
                 },
               ),
+              actions: <Widget>[
+                IconButton(
+                  icon: const Icon(Icons.info_outline),
+                  onPressed: () {
+                    AutoRouter.of(context).push(
+                      const AboutRoute(),
+                    );
+                  },
+                  tooltip: 'عن التطبيق',
+                ),
+              ],
+              centerTitle: false,
             ),
             drawer: Drawer(
               child: ListView(

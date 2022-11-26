@@ -13,14 +13,14 @@ class ExplanationCard extends StatefulWidget {
   final String recordingId;
 
   @override
-  _ExplanationCardState createState() => _ExplanationCardState();
+  State<ExplanationCard> createState() => _ExplanationCardState();
 }
 
 class _ExplanationCardState extends State<ExplanationCard>
     with SingleTickerProviderStateMixin {
   final List<Widget> tabs = [
-    Tab(text: 'فيديو للشرح'),
-    Tab(text: 'تسجيل صوتي للشرح'),
+    const Tab(text: 'فيديو للشرح'),
+    const Tab(text: 'تسجيل صوتي للشرح'),
   ];
 
   late TabController _tabController;
@@ -51,7 +51,7 @@ class _ExplanationCardState extends State<ExplanationCard>
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(4),
+      margin: const EdgeInsets.symmetric(vertical: 4.0),
       decoration: BoxDecoration(
         border: Border.all(color: Theme.of(context).primaryColor),
         borderRadius: const BorderRadius.all(Radius.circular(5)),
