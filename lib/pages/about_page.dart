@@ -144,19 +144,17 @@ class AboutPage extends StatelessWidget {
                               ),
                             ],
                           ),
-                          textAlign: TextAlign.right,
+                          textAlign: TextAlign.justify,
                         ),
-                        Row(
-                          children: [
-                            const Text('📹', style: TextStyle(fontSize: 24)),
-                            const SizedBox(width: 10),
-                            const Text(
-                              'قناتنا على اليوتيوب: ',
-                              style: TextStyle(fontSize: 24),
-                            ),
-                            Text.rich(
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              const TextSpan(
+                                text: '- ',
+                                style: TextStyle(fontSize: 24),
+                              ),
                               TextSpan(
-                                text: 'https://youtube.com/@ieasybooks',
+                                text: 'قناتنا على اليوتيوب',
                                 style: const TextStyle(
                                   color: Colors.blue,
                                   fontSize: 24,
@@ -168,21 +166,20 @@ class AboutPage extends StatelessWidget {
                                           'https://youtube.com/@ieasybooks'),
                                     );
                                   },
-                              ),
-                            ),
-                          ],
+                              )
+                            ],
+                          ),
+                          textAlign: TextAlign.justify,
                         ),
-                        Row(
-                          children: [
-                            const Text('💬', style: TextStyle(fontSize: 24)),
-                            const SizedBox(width: 10),
-                            const Text(
-                              'قناتنا على تيليجرام: ',
-                              style: TextStyle(fontSize: 24),
-                            ),
-                            Text.rich(
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              const TextSpan(
+                                text: '- ',
+                                style: TextStyle(fontSize: 24),
+                              ),
                               TextSpan(
-                                text: 'https://t.me/ieasybooks',
+                                text: 'قناتنا على تيليجرام',
                                 style: const TextStyle(
                                   color: Colors.blue,
                                   fontSize: 24,
@@ -190,24 +187,24 @@ class AboutPage extends StatelessWidget {
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     launchUrlWrapper(
-                                      Uri.parse('https://t.me/ieasybooks'),
+                                      Uri.parse(
+                                          'https://t.me/ieasybooks'),
                                     );
                                   },
-                              ),
-                            ),
-                          ],
+                              )
+                            ],
+                          ),
+                          textAlign: TextAlign.justify,
                         ),
-                        Row(
-                          children: [
-                            const Text('📜', style: TextStyle(fontSize: 24)),
-                            const SizedBox(width: 10),
-                            const Text(
-                              'صفحتنا على الفيسبوك: ',
-                              style: TextStyle(fontSize: 24),
-                            ),
-                            Text.rich(
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              const TextSpan(
+                                text: '- ',
+                                style: TextStyle(fontSize: 24),
+                              ),
                               TextSpan(
-                                text: 'https://fb.com/ieasybooks',
+                                text: 'صفحتنا على الفيسبوك',
                                 style: const TextStyle(
                                   color: Colors.blue,
                                   fontSize: 24,
@@ -215,24 +212,24 @@ class AboutPage extends StatelessWidget {
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     launchUrlWrapper(
-                                      Uri.parse('https://fb.com/ieasybooks'),
+                                      Uri.parse(
+                                          'https://fb.com/ieasybooks'),
                                     );
                                   },
-                              ),
-                            ),
-                          ],
+                              )
+                            ],
+                          ),
+                          textAlign: TextAlign.justify,
                         ),
-                        Row(
-                          children: [
-                            const Text('👨‍💻', style: TextStyle(fontSize: 24)),
-                            const SizedBox(width: 10),
-                            const Text(
-                              'حسابنا على GitHub (للمبرمجين): ',
-                              style: TextStyle(fontSize: 24),
-                            ),
-                            Text.rich(
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              const TextSpan(
+                                text: '- ',
+                                style: TextStyle(fontSize: 24),
+                              ),
                               TextSpan(
-                                text: 'https://github.com/ieasybooks',
+                                text: 'حسابنا على GitHub (للمبرمجين)',
                                 style: const TextStyle(
                                   color: Colors.blue,
                                   fontSize: 24,
@@ -244,19 +241,15 @@ class AboutPage extends StatelessWidget {
                                           'https://github.com/ieasybooks'),
                                     );
                                   },
-                              ),
-                            ),
-                          ],
+                              )
+                            ],
+                          ),
+                          textAlign: TextAlign.justify,
                         ),
-                        Row(
-                          children: const [
-                            Text('✉️', style: TextStyle(fontSize: 24)),
-                            SizedBox(width: 10),
-                            Text(
-                              'بريدنا الالكتروني: easybooksdev@gmail.com',
-                              style: TextStyle(fontSize: 24),
-                            ),
-                          ],
+                        const Text(
+                          '- بريدنا الالكتروني: easybooksdev@gmail.com',
+                          style: TextStyle(fontSize: 24),
+                          textAlign: TextAlign.justify,
                         ),
                       ],
                     ),
