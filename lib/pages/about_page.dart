@@ -8,9 +8,49 @@ import 'package:islam200qa/utils/url_utils.dart';
 class AboutPage extends StatelessWidget {
   const AboutPage({Key? key}) : super(key: key);
 
+  TextSpan _buildTextSpan(
+    final BuildContext context,
+    final String text,
+    final TextStyle textStyle,
+  ) {
+    return TextSpan(text: text, style: textStyle);
+  }
+
+  Text _buildSocialMediaBulletPoint(final String text, final String url) {
+    return Text.rich(
+      TextSpan(
+        children: [
+          const TextSpan(
+            text: '- ',
+            style: TextStyle(fontSize: 24),
+          ),
+          TextSpan(
+            text: text,
+            style: const TextStyle(
+              color: Colors.blue,
+              fontSize: 24,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () {
+                launchUrlWrapper(Uri.parse(url));
+              },
+          ),
+        ],
+      ),
+      textAlign: TextAlign.right,
+    );
+  }
+
   @override
   Widget build(final BuildContext context) {
     FlutterNativeSplash.remove();
+
+    const TextStyle normalTextStyle = TextStyle(fontSize: 24);
+    final TextStyle highlightedTextStyle = TextStyle(
+      fontSize: 24,
+      fontWeight: FontWeight.bold,
+      color: Theme.of(context).primaryColor,
+    );
 
     double horizontalPaddingPercentage =
         getHorizontalPaddingPercentageByScreenSize(getScreenSize(context));
@@ -63,22 +103,20 @@ class AboutPage extends StatelessWidget {
                       child: Text.rich(
                         TextSpan(
                           children: [
-                            const TextSpan(
-                              text: 'يسعى تطبيق ',
-                              style: TextStyle(fontSize: 24),
+                            _buildTextSpan(
+                              context,
+                              'يسعى تطبيق ',
+                              normalTextStyle,
                             ),
-                            TextSpan(
-                              text: 'الإسلام في ٢٠٠ سؤال وجواب',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).primaryColor,
-                              ),
+                            _buildTextSpan(
+                              context,
+                              'الإسلام في ٢٠٠ سؤال وجواب',
+                              highlightedTextStyle,
                             ),
-                            const TextSpan(
-                              text:
-                                  ' إلى تقريب العقيدة الصحيحة إلى أفهام المسلمين من خلال توفير محتوى كتاب "أعلام السنة المنشورة لاعتقاد الطائفة الناجية المنصورة" للشيخ "حافظ بن أحمد الحكمي" بشرح الشيخ "إبراهيم رفيق" بطريقة حديثة، سهلة وممتعة وفي متناول الجميع بتضمينه لشرح الكتاب المرئي والمسموع ليتمكن المسلم من قراءة المحتوى ومتابعة الشرح في آنٍ واحد.',
-                              style: TextStyle(fontSize: 24),
+                            _buildTextSpan(
+                              context,
+                              ' إلى تقريب العقيدة الصحيحة إلى أفهام المسلمين من خلال توفير محتوى كتاب "أعلام السنة المنشورة لاعتقاد الطائفة الناجية المنصورة" للشيخ "حافظ بن أحمد الحكمي" بشرح الشيخ "إبراهيم رفيق" بطريقة حديثة، سهلة وممتعة وفي متناول الجميع بتضمينه لشرح الكتاب المرئي والمسموع ليتمكن المسلم من قراءة المحتوى ومتابعة الشرح في آنٍ واحد.',
+                              normalTextStyle,
                             ),
                           ],
                         ),
@@ -90,30 +128,25 @@ class AboutPage extends StatelessWidget {
                       child: Text.rich(
                         TextSpan(
                           children: [
-                            TextSpan(
-                              text: 'الإسلام في ٢٠٠ سؤال وجواب',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).primaryColor,
-                              ),
+                            _buildTextSpan(
+                              context,
+                              'الإسلام في ٢٠٠ سؤال وجواب',
+                              highlightedTextStyle,
                             ),
-                            const TextSpan(
-                              text: ' هو أحد منتجات مشروع ',
-                              style: TextStyle(fontSize: 24),
+                            _buildTextSpan(
+                              context,
+                              ' هو أحد منتجات مشروع ',
+                              normalTextStyle,
                             ),
-                            TextSpan(
-                              text: 'الكتب المُيسّرة',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).primaryColor,
-                              ),
+                            _buildTextSpan(
+                              context,
+                              'الكتب المُيسّرة',
+                              highlightedTextStyle,
                             ),
-                            const TextSpan(
-                              text:
-                                  '، والذي يهدف إلى تسهيل وتيسير وصول المسلمين بكافة مستوياتهم إلى الكتب الإسلامية الأساسية في شتّى علوم الإسلام مثل العقيدة، السيرة والحديث بطرق تقنية حديثة وسلسة، وإلى إنشاء أدوات وبرامج تُسهم في إثراء المحتوى التقني الإسلامي من خلال زيادة إنتاجية الدعاة أو من خلال توظيف التقنيات المختلفة في مجالات الدعوة والعلم الشرعي.',
-                              style: TextStyle(fontSize: 24),
+                            _buildTextSpan(
+                              context,
+                              '، والذي يهدف إلى تسهيل وتيسير وصول المسلمين بكافة مستوياتهم إلى الكتب الإسلامية الأساسية في شتّى علوم الإسلام مثل العقيدة، السيرة والحديث بطرق تقنية حديثة وسلسة، وإلى إنشاء أدوات وبرامج تُسهم في إثراء المحتوى التقني الإسلامي من خلال زيادة إنتاجية الدعاة أو من خلال توظيف التقنيات المختلفة في مجالات الدعوة والعلم الشرعي.',
+                              normalTextStyle,
                             ),
                           ],
                         ),
@@ -126,130 +159,45 @@ class AboutPage extends StatelessWidget {
                         Text.rich(
                           TextSpan(
                             children: [
-                              const TextSpan(
-                                text: 'يمكنك متابعة مشروع ',
-                                style: TextStyle(fontSize: 24),
+                              _buildTextSpan(
+                                context,
+                                'يمكنك متابعة مشروع ',
+                                normalTextStyle,
                               ),
-                              TextSpan(
-                                text: 'الكتب المُيسّرة',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).primaryColor,
-                                ),
+                              _buildTextSpan(
+                                context,
+                                'الكتب المُيسّرة',
+                                highlightedTextStyle,
                               ),
-                              const TextSpan(
-                                text: ' والتواصل معنا من خلال:',
-                                style: TextStyle(fontSize: 24),
+                              _buildTextSpan(
+                                context,
+                                ' والتواصل معنا من خلال:',
+                                normalTextStyle,
                               ),
                             ],
                           ),
                           textAlign: TextAlign.justify,
                         ),
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              const TextSpan(
-                                text: '- ',
-                                style: TextStyle(fontSize: 24),
-                              ),
-                              TextSpan(
-                                text: 'قناتنا على اليوتيوب',
-                                style: const TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: 24,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    launchUrlWrapper(
-                                      Uri.parse(
-                                          'https://youtube.com/@ieasybooks'),
-                                    );
-                                  },
-                              )
-                            ],
-                          ),
-                          textAlign: TextAlign.justify,
+                        _buildSocialMediaBulletPoint(
+                          'قناتنا على اليوتيوب',
+                          'https://youtube.com/@ieasybooks',
                         ),
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              const TextSpan(
-                                text: '- ',
-                                style: TextStyle(fontSize: 24),
-                              ),
-                              TextSpan(
-                                text: 'قناتنا على تيليجرام',
-                                style: const TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: 24,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    launchUrlWrapper(
-                                      Uri.parse(
-                                          'https://t.me/ieasybooks'),
-                                    );
-                                  },
-                              )
-                            ],
-                          ),
-                          textAlign: TextAlign.justify,
+                        _buildSocialMediaBulletPoint(
+                          'قناتنا على تيليجرام',
+                          'https://t.me/ieasybooks',
                         ),
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              const TextSpan(
-                                text: '- ',
-                                style: TextStyle(fontSize: 24),
-                              ),
-                              TextSpan(
-                                text: 'صفحتنا على الفيسبوك',
-                                style: const TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: 24,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    launchUrlWrapper(
-                                      Uri.parse(
-                                          'https://fb.com/ieasybooks'),
-                                    );
-                                  },
-                              )
-                            ],
-                          ),
-                          textAlign: TextAlign.justify,
+                        _buildSocialMediaBulletPoint(
+                          'صفحتنا على الفيسبوك',
+                          'https://fb.com/ieasybooks',
                         ),
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              const TextSpan(
-                                text: '- ',
-                                style: TextStyle(fontSize: 24),
-                              ),
-                              TextSpan(
-                                text: 'حسابنا على GitHub (للمبرمجين)',
-                                style: const TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: 24,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    launchUrlWrapper(
-                                      Uri.parse(
-                                          'https://github.com/ieasybooks'),
-                                    );
-                                  },
-                              )
-                            ],
-                          ),
-                          textAlign: TextAlign.justify,
+                        _buildSocialMediaBulletPoint(
+                          'حسابنا على GitHub (للمبرمجين)',
+                          'https://github.com/ieasybooks',
                         ),
                         const Text(
                           '- بريدنا الالكتروني: easybooksdev@gmail.com',
-                          style: TextStyle(fontSize: 24),
-                          textAlign: TextAlign.justify,
+                          style: normalTextStyle,
+                          textAlign: TextAlign.right,
                         ),
                       ],
                     ),
