@@ -179,15 +179,19 @@ class AboutPage extends StatelessWidget {
                           textAlign: TextAlign.justify,
                         ),
                         _buildSocialMediaBulletPoint(
-                          'قناتنا على اليوتيوب',
-                          'https://youtube.com/@ieasybooks',
-                        ),
-                        _buildSocialMediaBulletPoint(
                           'قناتنا على تيليجرام',
                           'https://t.me/ieasybooks',
                         ),
                         _buildSocialMediaBulletPoint(
-                          'صفحتنا على الفيسبوك',
+                          'قناتنا على يوتيوب',
+                          'https://youtube.com/@ieasybooks',
+                        ),
+                        _buildSocialMediaBulletPoint(
+                          'حسابنا على تويتر',
+                          'https://twitter.com/iieasybooks',
+                        ),
+                        _buildSocialMediaBulletPoint(
+                          'صفحتنا على فيسبوك',
                           'https://fb.com/ieasybooks',
                         ),
                         _buildSocialMediaBulletPoint(
