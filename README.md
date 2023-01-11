@@ -2,7 +2,7 @@
 
 <div dir="rtl">
   <a href="https://app.netlify.com/sites/islam200qa/deploys">
-    <img src="https://api.netlify.com/api/v1/badges/69250977-e420-4da8-959a-65ab91a758f2/deploy-status"/>
+    <img src="https://api.netlify.com/api/v1/badges/d2c597b8-8fa7-440f-a3c5-df88cc80c7ff/deploy-status"/>
   </a>
 </div>
 
