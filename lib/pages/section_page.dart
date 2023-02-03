@@ -251,7 +251,7 @@ class _SectionPageState extends State<SectionPage> {
       return GestureDetector(
         onHorizontalDragUpdate: (details) {
           if (details.delta.dx > 8) {
-            if (widget.sectionId + 1 < lastSection) {
+            if (widget.sectionId + 1 <= lastSection) {
               AutoRouter.of(context).popUntilRouteWithName('Root Route');
               AutoRouter.of(context).push(
                 SectionRoute(sectionId: widget.sectionId + 1),
