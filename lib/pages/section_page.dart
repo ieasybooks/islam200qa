@@ -80,7 +80,7 @@ class _SectionPageState extends State<SectionPage> {
       key: _navigationKey,
       title: 'التنقّل',
       description:
-          'يمكنك الإنتقال بين الأسئلة من خلال الضغط على رز "السابق" و"التالي"',
+      'يمكنك الإنتقال بين الأسئلة من خلال الضغط على رز "السابق" و"التالي"، أو من خلال سحب الشاشة يمينًا ويسارًا',
       child: Row(
         children: [
           Expanded(
