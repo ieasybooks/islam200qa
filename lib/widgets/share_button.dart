@@ -44,7 +44,7 @@ class _ShareButtonState extends State<ShareButton> {
           onTap: () {
             Share.share(
               sprintf(
-                'الإسلام في 200 سؤال وجواب: %s\n\nhttps://islam200qa.com/%d',
+                'الإسلام في 200 سؤال وجواب: %s\n\nhttps://islam200qa.ieasybooks.com/%d',
                 [
                   widget.title,
                   widget.sectionId,

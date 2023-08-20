@@ -12,7 +12,7 @@ class WebsiteButton extends StatelessWidget {
         alignment: Alignment.topRight,
         child: GestureDetector(
           onTap: () {
-            launchUrlWrapper(Uri.parse('https://islam200qa.com'));
+            launchUrlWrapper(Uri.parse('https://islam200qa.ieasybooks.com'));
           },
           child: Text.rich(
             TextSpan(

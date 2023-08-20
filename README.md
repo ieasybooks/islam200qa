@@ -14,7 +14,7 @@
 
 <h2 dir="rtl">كيف يمكنني الحصول عليه؟</h2>
 
-<p dir="rtl">رابط موقع التطبيق: https://islam200qa.com</p>
+<p dir="rtl">رابط موقع التطبيق: https://islam200qa.ieasybooks.com</p>
 
 <div dir="rtl">
   <a href='https://play.google.com/store/apps/details?id=com.easybooks.islam200qa&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img width="250" alt='احصل عليه من Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/ar_badge_web_generic.png'/></a>
