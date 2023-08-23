@@ -52,8 +52,7 @@ class AboutPage extends StatelessWidget {
       color: Theme.of(context).primaryColor,
     );
 
-    double horizontalPaddingPercentage =
-        getHorizontalPaddingPercentageByScreenSize(getScreenSize(context));
+    double horizontalPaddingPercentage = getHorizontalPaddingPercentageByScreenSize(getScreenSize(context));
 
     return Scaffold(
       appBar: AppBar(
@@ -202,6 +201,33 @@ class AboutPage extends StatelessWidget {
                           '- بريدنا الالكتروني: easybooksdev@gmail.com',
                           style: normalTextStyle,
                           textAlign: TextAlign.right,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'سياسة الخصوصية',
+                                  style: const TextStyle(
+                                    color: Colors.blue,
+                                    fontSize: 24,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      launchUrlWrapper(Uri.parse('https://islam200qa.ieasybooks.com/privacy'));
+                                    },
+                                ),
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
                     ),
