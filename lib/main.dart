@@ -37,6 +37,7 @@ class Islam200QaApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'Amiri',
         primarySwatch: Palette.brown,
+        useMaterial3: false,
       ),
     );
   }

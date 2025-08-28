@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+13
+version: 1.0.0+14
 
 environment:
   sdk: ">=2.17.6 <3.0.0"
@@ -33,13 +33,14 @@ dependencies:
     sdk: flutter
   auto_route: 4.2.1
   sprintf:
-  share_plus: ^6.3.0
-  showcaseview: 1.1.8
+  share_plus: ^11.1.0
+  showcaseview: 4.0.1
   shared_preferences:
   flutter_markdown: ^0.6.9
-  flutter_native_splash: ^2.2.7
-  url_launcher: 6.1.5
-  fwfh_webview: ^0.6.2+5
+  flutter_native_splash: ^2.4.6
+  url_launcher: ^6.3.2
+  flutter_widget_from_html_core: any
+  fwfh_webview: ^0.15.4
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -50,7 +51,7 @@ dev_dependencies:
     sdk: flutter
   auto_route_generator: 4.2.0
   build_runner:
-  flutter_launcher_icons: ^0.10.0
+  flutter_launcher_icons: ^0.14.4
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

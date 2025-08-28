@@ -76,7 +76,7 @@ class _SectionPageState extends State<SectionPage> {
 
   Widget _buildNavigationRow(final int sectionId) {
     return Showcase(
-      overlayPadding: const EdgeInsets.symmetric(horizontal: 5.0),
+      // overlayPadding: const EdgeInsets.symmetric(horizontal: 5.0),
       key: _navigationKey,
       title: 'التنقّل',
       description:
@@ -129,7 +129,7 @@ class _SectionPageState extends State<SectionPage> {
       (paragraphs) {
         _content.add(
           Showcase(
-            overlayPadding: const EdgeInsets.symmetric(horizontal: 5.0),
+            // overlayPadding: const EdgeInsets.symmetric(horizontal: 5.0),
             key: _finishKey,
             description: 'وفّقك الله لما يُحب ويرضى ونفعك بما ستقرأ',
             showArrow: false,
@@ -188,7 +188,7 @@ class _SectionPageState extends State<SectionPage> {
 
         _content.add(
           Showcase(
-            overlayPadding: const EdgeInsets.symmetric(horizontal: 5.0),
+            // overlayPadding: const EdgeInsets.symmetric(horizontal: 5.0),
             key: _footerKey,
             title: 'الخيارات',
             description:
