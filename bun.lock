@@ -5,11 +5,11 @@
     "": {
       "name": "islam200qa",
       "devDependencies": {
-        "@ieasybooks/release": "github:ieasybooks/release#301d806d36f8d8a8f04a04020c32f2bcd0dcdf94",
+        "@ieasybooks/release": "github:ieasybooks/release#00f7f1b55abd1657054ef3d84c930bd6cf6cd67e",
       },
     },
   },
   "packages": {
-    "@ieasybooks/release": ["@ieasybooks/release@github:ieasybooks/release#301d806", { "bin": { "ieasybooks-release": "./bin/ieasybooks-release.ts" } }, "ieasybooks-release-301d806", "sha512-f4POJ1gCsmwsntENwCSllmUrF4GUOTNP8H20Y9hqtFmms6ekeXWaJgyU2YiTOd0ndawGVG+/7rwymycb5d4ZFg=="],
+    "@ieasybooks/release": ["@ieasybooks/release@github:ieasybooks/release#00f7f1b", { "bin": { "ieasybooks-release": "./bin/ieasybooks-release.ts" } }, "ieasybooks-release-00f7f1b", "sha512-M3V5yi8NIBYNWqbGfnXucI2Ud0VuFGrdylJk3Ft9jTYWBas22lJIM8dhyzgJasLsagRvMSYiHQWVfDZnmNt0Cw=="],
   }
 }

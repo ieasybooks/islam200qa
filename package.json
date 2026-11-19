@@ -8,6 +8,6 @@
     "fastlane:check": "bundle exec fastlane lanes"
   },
   "devDependencies": {
-    "@ieasybooks/release": "github:ieasybooks/release#301d806d36f8d8a8f04a04020c32f2bcd0dcdf94"
+    "@ieasybooks/release": "github:ieasybooks/release#00f7f1b55abd1657054ef3d84c930bd6cf6cd67e"
   }
 }
