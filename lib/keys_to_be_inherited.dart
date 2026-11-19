@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+// SectionPage sets bookmarkKey while it builds, for the guided tour, so the
+// widget isn't immutable.
+// ignore: must_be_immutable
 class KeysToBeInherited extends InheritedWidget {
   final GlobalKey indexKey;
   GlobalKey? bookmarkKey;

@@ -1,0 +1,15 @@
+{
+  "lockfileVersion": 2,
+  "configVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "islam200qa",
+      "devDependencies": {
+        "@ieasybooks/release": "github:ieasybooks/release#04442875d8c4f78dd5567ce4aa8f8993c160cada",
+      },
+    },
+  },
+  "packages": {
+    "@ieasybooks/release": ["@ieasybooks/release@github:ieasybooks/release#0444287", { "bin": { "ieasybooks-release": "./bin/ieasybooks-release.ts" } }, "ieasybooks-release-0444287", "sha512-BXz1JBoeqCkwITSr+NEngUbQ2wVGTz9eXsoSfEHN4d86f04KV4A2wTDGUDr6MfFf1mGUj1rMl0Kw1Vzj6Aso4Q=="],
+  }
+}

@@ -1,0 +1,1 @@
+No login, ads or purchases. The book's text is built in. Each question's explanation plays inside the app from YouTube (video) and Google Drive (audio), which need internet. The menu button lists the questions; the i button opens About and the privacy policy.

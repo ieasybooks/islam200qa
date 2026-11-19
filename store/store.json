@@ -1,0 +1,31 @@
+{
+  "name": "Islam in 200 Q&A",
+  "stores": [
+    "googlePlay",
+    "appGallery"
+  ],
+  "languages": {
+    "ar": {
+      "googlePlay": "ar",
+      "appGallery": "ar"
+    }
+  },
+  "appGallery": {
+    "appId": "115120279"
+  },
+  "audit": {
+    "googlePlay": {
+      "packageName": "com.easybooks.islam200qa",
+      "contact": {
+        "email": "easybooksdev@gmail.com",
+        "website": "https://islam200qa.ieasybooks.com",
+        "phone": ""
+      }
+    },
+    "appGallery": {
+      "ageRating": "3+",
+      "privacyUrl": "https://islam200qa.ieasybooks.com/privacy",
+      "dataRightsUrl": "https://islam200qa.ieasybooks.com/privacy"
+    }
+  }
+}

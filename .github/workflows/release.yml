@@ -1,0 +1,364 @@
+name: Release app
+
+# Releases the Android app to Google Play and AppGallery: each store reviews it
+# and publishes it once approved. release-please.yml calls it with the tag
+# (such as v1.0.1) it made for a merged release pull request and the commit it
+# tagged, once main's checks passed on that commit. Pushing a version tag runs
+# it too, for a commit whose checks passed on main (its "Checks" status).
+# Every job builds exactly that commit. See docs/releasing.md.
+#
+# Any other v* tag (such as v0-dry-run), or a run started by hand with
+# dry-run ticked, is a dry run: it builds and signs the app and has each store
+# check what it would receive, but submits nothing. A release that a newer
+# release has superseded stops before each upload, so re-running an older
+# release can't replace a newer one in the stores. The vault serves the
+# release secrets only to this workflow on v* tags and to its jobs that
+# release-please.yml on main calls, started by AliOsm.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: Build and check everything, but release nothing
+        type: boolean
+        default: true
+  workflow_call:
+    inputs:
+      tag:
+        description: The version tag to release, such as v1.0.1
+        type: string
+        required: false
+      sha:
+        description: The commit the tag was made at, which every job checks out
+        type: string
+        required: false
+      access-check:
+        description: Only check the vault gives this workflow the store secrets and not other apps' keys and tokens
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# One release at a time. The vault access check has its own group: GitHub
+# keeps only the newest waiting run in a group, cancelling the one it
+# replaces, so a check waiting here would cancel a release waiting here.
+concurrency:
+  group: ${{ inputs.access-check && 'release-access-check' || 'release' }}
+  cancel-in-progress: false
+
+env:
+  FASTLANE_OPT_OUT_USAGE: "YES"
+  FASTLANE_SKIP_UPDATE_CHECK: "1"
+  FASTLANE_HIDE_CHANGELOG: "1"
+  LANG: en_US.UTF-8
+  LC_ALL: en_US.UTF-8
+
+jobs:
+  check:
+    name: Check
+    if: ${{ !inputs.access-check }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      statuses: read
+    outputs:
+      dry-run: ${{ steps.mode.outputs.dry-run }}
+      tag: ${{ steps.mode.outputs.tag }}
+      sha: ${{ steps.mode.outputs.sha }}
+    steps:
+      - name: Release or dry run
+        id: mode
+        env:
+          CALLED_TAG: ${{ inputs.tag }}
+          CALLED_SHA: ${{ inputs.sha }}
+          DISPATCHED_DRY_RUN: ${{ inputs.dry-run }}
+        run: |
+          called=false
+          if [ -n "$CALLED_TAG" ]; then
+            # From release-please.yml, which runs on main and passes the
+            # commit it tagged.
+            if ! [[ $CALLED_SHA =~ ^[0-9a-f]{40}$ ]]; then
+              echo "::error::release-please.yml passed the tag $CALLED_TAG without its commit."
+              exit 1
+            fi
+            tag=$CALLED_TAG
+            sha=$CALLED_SHA
+            dry_run=false
+            called=true
+          elif [[ $GITHUB_REF != refs/tags/v* ]]; then
+            echo "::error::Run the release workflow on a v* tag; the vault serves the release secrets only there."
+            exit 1
+          elif [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
+            tag=$GITHUB_REF_NAME
+            sha=$GITHUB_SHA
+            dry_run=$DISPATCHED_DRY_RUN
+          elif [[ $GITHUB_REF_NAME =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            tag=$GITHUB_REF_NAME
+            sha=$GITHUB_SHA
+            dry_run=false
+          else
+            tag=$GITHUB_REF_NAME
+            sha=$GITHUB_SHA
+            dry_run=true
+          fi
+          {
+            echo "tag=$tag"
+            echo "sha=$sha"
+            echo "dry-run=$dry_run"
+            echo "called=$called"
+          } >> "$GITHUB_OUTPUT"
+          if [ "$dry_run" = true ]; then
+            echo "A dry run of $tag ($sha): nothing goes to the stores."
+          else
+            echo "Releasing $tag ($sha) to the stores."
+          fi
+      # Every job checks out this exact commit, never the tag by name: a
+      # branch named like the tag would win, and a tag can be moved.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ steps.mode.outputs.sha }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      # The release checks come from ieasybooks/release, pinned in bun.lock,
+      # and run from node_modules/.bin, never downloaded. Nothing else is
+      # needed, so no lifecycle scripts run.
+      - run: bun install --frozen-lockfile --ignore-scripts
+      # The tag still points at that commit, and a tag pushed by hand is on
+      # a commit main's checks passed (release-please.yml checked its own).
+      - name: Check the tag's commit
+        if: steps.mode.outputs.dry-run == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.mode.outputs.tag }}
+          SHA: ${{ steps.mode.outputs.sha }}
+          CALLED: ${{ steps.mode.outputs.called }}
+        run: |
+          if [ "$CALLED" = true ]; then
+            ./node_modules/.bin/ieasybooks-release verify-commit "$TAG" "$SHA"
+          else
+            ./node_modules/.bin/ieasybooks-release verify-commit "$TAG" "$SHA" --checked
+          fi
+      # Each job that uploads checks again, for a re-run of only that job.
+      - name: Check no newer release has replaced it
+        if: steps.mode.outputs.dry-run == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.mode.outputs.tag }}
+        run: ./node_modules/.bin/ieasybooks-release not-superseded "$TAG"
+      - name: Check the tag, version and store listing
+        env:
+          DRY_RUN: ${{ steps.mode.outputs.dry-run }}
+          TAG: ${{ steps.mode.outputs.tag }}
+        run: |
+          if [ "$DRY_RUN" = true ]; then
+            ./node_modules/.bin/ieasybooks-release store check --app .
+          else
+            ./node_modules/.bin/ieasybooks-release store check --app . --tag "$TAG"
+          fi
+
+  android:
+    name: Build Android
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.check.outputs.sha }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      # Only the release tool is needed here: no lifecycle scripts.
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          distribution: temurin
+          java-version: 21
+      # Gradle's downloads, cached by the releases release-please.yml runs on
+      # main: a tag run can read the cache but not write it. The basic
+      # provider is actions/cache; the default one is proprietary and only a
+      # preview for private repositories.
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+        with:
+          cache-provider: basic
+      # mise.toml pins Flutter for Macs and the workflows alike.
+      - name: Read the Flutter version
+        id: flutter
+        run: |
+          version=$(sed -n 's/^flutter = "\(.*\)"$/\1/p' mise.toml)
+          test -n "$version" || { echo "::error::mise.toml pins no Flutter version."; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      # No cache: this job holds the upload key, and the action's cache step
+      # isn't pinned to a commit.
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: stable
+          flutter-version: ${{ steps.flutter.outputs.version }}
+      - run: flutter pub get --enforce-lockfile
+      - uses: ieasybooks/vault@1bce5652d3d2461b0c6d590c3358d8c877fe61c8 # v1.1.0
+        with:
+          secrets: ANDROID_UPLOAD_KEYSTORE_PASSWORD
+          base64-files: ANDROID_UPLOAD_KEYSTORE.p12
+      # android/app/build.gradle signs with ANDROID_UPLOAD_KEYSTORE_FILE.
+      # Each build takes its version name and code from pubspec.yaml's
+      # version: 1.0.1 builds as 1000001.
+      - name: Build the AAB and APK
+        run: |
+          set -euo pipefail
+          info=$(./node_modules/.bin/ieasybooks-release release-info --app .)
+          version=$(jq -r .version <<< "$info")
+          code=$(jq -r .androidVersionCode <<< "$info")
+          flutter build appbundle --release --build-name "$version" --build-number "$code"
+          flutter build apk --release --build-name "$version" --build-number "$code"
+      - name: Check they're signed with the upload key
+        env:
+          # ANDROID_UPLOAD_KEYSTORE's certificate, which Google Play knows as
+          # the upload key and AppGallery as the APK's signer.
+          SHA256: 9D:E6:FD:8C:3C:3D:93:57:A5:F4:32:DA:EF:B2:49:2C:E8:46:64:45:BB:B3:77:3F:8A:BA:98:0B:8E:11:7B:4A
+        run: |
+          set -euo pipefail
+          name=$(./node_modules/.bin/ieasybooks-release release-info --app . | jq -r '"islam200qa-\(.version)-\(.androidVersionCode)"')
+          mkdir -p build/release
+          cp build/app/outputs/bundle/release/app-release.aab "build/release/$name.aab"
+          cp build/app/outputs/flutter-apk/app-release.apk "build/release/$name.apk"
+          keytool -printcert -jarfile "build/release/$name.aab" | grep -q "SHA256: $SHA256" ||
+            { echo "::error::The AAB isn't signed with the upload key."; exit 1; }
+          apksigner=$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 | sort -V | tail -1)/apksigner
+          digest=$(echo "$SHA256" | tr -d : | tr A-F a-f)
+          "$apksigner" verify --print-certs "build/release/$name.apk" | grep -q "SHA-256 digest: $digest" ||
+            { echo "::error::The APK isn't signed with the upload key."; exit 1; }
+          echo "Both are signed with the upload key."
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: android
+          path: build/release/
+          if-no-files-found: error
+          retention-days: 14
+
+  google-play:
+    name: Google Play
+    needs: [check, android]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      DRY_RUN: ${{ needs.check.outputs.dry-run }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.check.outputs.sha }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      # Only the release tool is needed here: no lifecycle scripts.
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - name: Check no newer release has replaced it
+        if: needs.check.outputs.dry-run == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.check.outputs.tag }}
+        run: ./node_modules/.bin/ieasybooks-release not-superseded "$TAG"
+      - uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+        with:
+          ruby-version: "3.4"
+          bundler-cache: true
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: android
+          path: build/release
+      - run: ./node_modules/.bin/ieasybooks-release store fastlane-metadata --app . "$RUNNER_TEMP/store"
+      - uses: ieasybooks/vault@1bce5652d3d2461b0c6d590c3358d8c877fe61c8 # v1.1.0
+        with:
+          files: GOOGLE_PLAY_SERVICE_ACCOUNT.json
+      # The settings a release doesn't send (contact details) still match store.json.
+      - name: Check Google Play's settings match store.json
+        run: ./node_modules/.bin/ieasybooks-release store audit --app . --store googlePlay
+      - name: Upload to production with the listing
+        env:
+          STORE_METADATA_DIR: ${{ runner.temp }}/store
+        run: bundle exec fastlane android publish aab:"$(ls build/release/*.aab)" dry_run:"$DRY_RUN"
+
+  appgallery:
+    name: AppGallery
+    needs: [check, android]
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      DRY_RUN: ${{ needs.check.outputs.dry-run }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.check.outputs.sha }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      # Only the release tool is needed here: no lifecycle scripts.
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - name: Check no newer release has replaced it
+        if: needs.check.outputs.dry-run == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.check.outputs.tag }}
+        run: ./node_modules/.bin/ieasybooks-release not-superseded "$TAG"
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: android
+          path: build/release
+      - uses: ieasybooks/vault@1bce5652d3d2461b0c6d590c3358d8c877fe61c8 # v1.1.0
+        with:
+          secrets: APPGALLERY_CONNECT_SERVICE_ACCOUNT
+      # The settings a release doesn't send (rating, privacy links) still match store.json.
+      - name: Check AppGallery's settings match store.json
+        run: ./node_modules/.bin/ieasybooks-release store audit --app . --store appGallery
+      - name: Upload and submit for review
+        run: |
+          if [ "$DRY_RUN" = true ]; then
+            ./node_modules/.bin/ieasybooks-release appgallery publish --app . build/release/*.apk --dry-run
+          else
+            ./node_modules/.bin/ieasybooks-release appgallery publish --app . build/release/*.apk
+          fi
+
+  # release-please.yml's vault access check (docs/releasing.md): this
+  # workflow's jobs get the store secrets and the upload key, and not other
+  # apps' keys, deploy tokens or upload keys. It builds and prints nothing.
+  access-check:
+    name: Vault access check
+    if: ${{ inputs.access-check }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      # Each asked for alone, before the served ones, and refused because no
+      # rule matches this job.
+      - uses: ieasybooks/vault@1bce5652d3d2461b0c6d590c3358d8c877fe61c8 # v1.1.0
+        with:
+          expect-refused: |
+            MOFIED_ANDROID_KEYSTORE
+            MOFIED_WEB_DEPLOY_TOKEN
+            SHAWARED_WEB_DEPLOY_TOKEN
+            SHAWARED_AUDIO_SECRET_ACCESS_KEY
+          secrets: |
+            APPGALLERY_CONNECT_SERVICE_ACCOUNT=STORE_SECRET
+            ANDROID_UPLOAD_KEYSTORE_PASSWORD=UPLOAD_KEY_SECRET
+      - name: The vault serves the store secrets and the upload key here
+        run: |
+          test -n "$STORE_SECRET" && test -n "$UPLOAD_KEY_SECRET" &&
+            echo "The vault served APPGALLERY_CONNECT_SERVICE_ACCOUNT and ANDROID_UPLOAD_KEYSTORE_PASSWORD."

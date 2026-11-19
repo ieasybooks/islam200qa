@@ -1,0 +1,53 @@
+# The Google Play release, run by .github/workflows/release.yml (see
+# docs/releasing.md). AppGallery is published by ieasybooks-release itself.
+# The Google Play service account key comes from the ieasybooks vault through
+# the job's environment:
+#   GOOGLE_PLAY_SERVICE_ACCOUNT_FILE  Google Play service account key (JSON)
+# Store texts and images come from store/, written for supply into
+# STORE_METADATA_DIR by ieasybooks-release store fastlane-metadata
+# (ieasybooks/release, pinned in package.json).
+
+require "json"
+require "open3"
+
+ROOT = File.expand_path("..", __dir__)
+PACKAGE_NAME = "com.easybooks.islam200qa"
+
+skip_docs
+opt_out_usage
+
+# The version in pubspec.yaml and the versionCode that follows from it, from
+# ieasybooks-release in node_modules, never a downloaded one.
+RELEASE_TOOL = File.join(ROOT, "node_modules/.bin/ieasybooks-release")
+
+def release_info
+  out, status = Open3.capture2(RELEASE_TOOL, "release-info", "--app", ".", chdir: ROOT)
+  UI.user_error!("ieasybooks-release release-info failed; is node_modules installed?") unless status.success?
+  info = JSON.parse(out)
+  { version: info.fetch("version"), android_version_code: info.fetch("androidVersionCode") }
+end
+
+def dry_run?(options)
+  options[:dry_run].to_s == "true"
+end
+
+platform :android do
+  # Sends the AAB to Google Play's production track with the store texts,
+  # release notes and images (only those that changed). Google reviews it and,
+  # with Managed Publishing off, publishes it once approved. A dry run checks
+  # the same edit with Google Play without committing it.
+  lane :publish do |options|
+    info = release_info
+    upload_to_play_store(
+      json_key: ENV.fetch("GOOGLE_PLAY_SERVICE_ACCOUNT_FILE"),
+      package_name: PACKAGE_NAME,
+      aab: options.fetch(:aab),
+      track: "production",
+      release_status: "completed",
+      version_name: "#{info[:version]} (#{info[:android_version_code]})",
+      metadata_path: File.join(ENV.fetch("STORE_METADATA_DIR"), "google-play/metadata"),
+      sync_image_upload: true,
+      validate_only: dry_run?(options)
+    )
+  end
+end
