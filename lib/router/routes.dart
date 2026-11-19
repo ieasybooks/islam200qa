@@ -4,6 +4,7 @@ import 'package:islam200qa/pages/about_page.dart';
 import 'package:islam200qa/pages/privacy_page.dart';
 import 'package:islam200qa/pages/section_page.dart';
 import 'package:islam200qa/pages/sections_page.dart';
+import 'package:islam200qa/pages/support_page.dart';
 import 'package:islam200qa/router/guards/check_if_section_exists.dart';
 import 'package:islam200qa/router/guards/redirect_to_bookmark.dart';
 
@@ -11,6 +12,7 @@ import 'package:islam200qa/router/guards/redirect_to_bookmark.dart';
   replaceInRouteName: 'Page,Route',
   routes: <AutoRoute>[
     AutoRoute(path: '/privacy', page: PrivacyPage),
+    AutoRoute(path: '/support', page: SupportPage),
     AutoRoute(path: '/about', page: AboutPage),
     CustomRoute(
       name: 'SectionsPageParent',

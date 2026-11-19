@@ -16,6 +16,26 @@ class AboutPage extends StatelessWidget {
     return TextSpan(text: text, style: textStyle);
   }
 
+  // Opens one of the app's pages, such as /privacy, inside the app. The stores
+  // link the same pages on the website.
+  TextSpan _buildPageLinkSpan(
+    final BuildContext context,
+    final String text,
+    final String path,
+  ) {
+    return TextSpan(
+      text: text,
+      style: const TextStyle(
+        color: Colors.blue,
+        fontSize: 24,
+      ),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          AutoRouter.of(context).pushNamed(path);
+        },
+    );
+  }
+
   Text _buildSocialMediaBulletPoint(final String text, final String url) {
     return Text.rich(
       TextSpan(
@@ -208,25 +228,30 @@ class AboutPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16),
-                          child: Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'سياسة الخصوصية',
-                                  style: const TextStyle(
-                                    color: Colors.blue,
-                                    fontSize: 24,
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  _buildPageLinkSpan(
+                                    context,
+                                    'التواصل والدعم',
+                                    '/support',
                                   ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      launchUrlWrapper(Uri.parse('https://islam200qa.ieasybooks.com/privacy'));
-                                    },
-                                ),
-                              ],
+                                  const TextSpan(
+                                    text: '   ·   ',
+                                    style: normalTextStyle,
+                                  ),
+                                  _buildPageLinkSpan(
+                                    context,
+                                    'سياسة الخصوصية',
+                                    '/privacy',
+                                  ),
+                                ],
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                         ),
                       ],
