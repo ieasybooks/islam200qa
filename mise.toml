@@ -1,0 +1,12 @@
+[tools]
+# The app. pubspec.lock's SDK-pinned packages are Flutter 3.35's; the
+# workflows read this version from here.
+flutter = "3.35.7"
+# The release tooling (package.json, ieasybooks/release).
+bun = "1.4.4"
+# The store release (fastlane) and the Android build.
+ruby = "3.4.7"
+java = "temurin-21.0.12+8.0.LTS"
+
+[tasks.check]
+run = ["flutter analyze --no-fatal-infos", "flutter test", "bun run store:check", "bun run fastlane:check"]

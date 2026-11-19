@@ -1,0 +1,43 @@
+name: Commits
+
+# Checks that what a pull request would release reaches the app: each commit
+# release-please would release (fix:, feat:, ...) must change a folder it
+# releases (release-please-config.json), as must the title across the whole
+# pull request, which a squash merge lands as one commit. A title can change
+# without a push, so this cheap check runs on edits too. See
+# docs/releasing.md.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: commits-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release-routing:
+    name: Release routing
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # The whole history, for the pull request's own commits.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      # The check comes from ieasybooks/release, pinned in bun.lock; nothing
+      # else is needed, so no lifecycle scripts run.
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - name: Check every releasing commit changes the app
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+          TITLE: ${{ github.event.pull_request.title }}
+        run: ./node_modules/.bin/ieasybooks-release routing "$BASE" "$HEAD"

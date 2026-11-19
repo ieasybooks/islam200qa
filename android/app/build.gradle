@@ -30,7 +30,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = 'com.easybooks.islam200qa'
-    compileSdkVersion localProperties.getProperty('flutter.compileSdkVersion').toInteger()
+    // The live release's levels (1.0.0, 14): Android 10 and up, targeting 36.
+    compileSdkVersion 36
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -52,18 +53,31 @@ android {
         applicationId "com.easybooks.islam200qa"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        minSdkVersion localProperties.getProperty('flutter.minSdkVersion').toInteger()
-        targetSdkVersion localProperties.getProperty('flutter.targetSdkVersion').toInteger()
+        minSdkVersion 29
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
 
     signingConfigs {
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
+            // The release workflow signs with the ieasybooks apps' shared
+            // upload key, the vault's ANDROID_UPLOAD_KEYSTORE (a PKCS12
+            // keystore, alias upload), which signs the live AppGallery APK and
+            // which Google Play knows as the upload key. Elsewhere,
+            // android/key.properties names a keystore.
+            if (System.getenv("ANDROID_UPLOAD_KEYSTORE_FILE")) {
+                storeFile file(System.getenv("ANDROID_UPLOAD_KEYSTORE_FILE"))
+                storeType "pkcs12"
+                storePassword System.getenv("ANDROID_UPLOAD_KEYSTORE_PASSWORD")
+                keyAlias "upload"
+                keyPassword System.getenv("ANDROID_UPLOAD_KEYSTORE_PASSWORD")
+            } else {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+                storePassword keystoreProperties['storePassword']
+            }
         }
     }
 

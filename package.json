@@ -1,0 +1,13 @@
+{
+  "name": "islam200qa",
+  "private": true,
+  "packageManager": "bun@1.4.4",
+  "scripts": {
+    "release-info": "ieasybooks-release release-info --app .",
+    "store:check": "ieasybooks-release store check --app .",
+    "fastlane:check": "bundle exec fastlane lanes"
+  },
+  "devDependencies": {
+    "@ieasybooks/release": "github:ieasybooks/release#301d806d36f8d8a8f04a04020c32f2bcd0dcdf94"
+  }
+}

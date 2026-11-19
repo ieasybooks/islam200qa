@@ -1,0 +1,8 @@
+{
+  "name": "Islam in 200 Q&A",
+  "stores": ["googlePlay", "appGallery"],
+  "languages": {
+    "ar": { "googlePlay": "ar", "appGallery": "ar" }
+  },
+  "appGallery": { "appId": "115120279" }
+}

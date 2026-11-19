@@ -1,0 +1,85 @@
+name: Check
+
+# Every check, on pull requests and, called with the commit, on main
+# (release-please.yml's Checks status, which releases depend on): Flutter's
+# analysis and tests, the store listing with pubspec.yaml's version, and that
+# fastlane loads the release lane. The Android build runs in release.yml only
+# (docs/releasing.md).
+on:
+  pull_request:
+  workflow_call:
+    inputs:
+      sha:
+        description: The commit to check
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+# A new push to a pull request replaces its running checks. Runs on main each
+# get their own group: a release waits on its run, which nothing may cancel.
+concurrency:
+  group: check-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  flutter:
+    name: Flutter
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.sha }}
+          persist-credentials: false
+      # mise.toml pins Flutter for Macs and the workflows alike.
+      - name: Read the Flutter version
+        id: flutter
+        run: |
+          version=$(sed -n 's/^flutter = "\(.*\)"$/\1/p' mise.toml)
+          test -n "$version" || { echo "::error::mise.toml pins no Flutter version."; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: stable
+          flutter-version: ${{ steps.flutter.outputs.version }}
+      - run: flutter pub get --enforce-lockfile
+      # Infos (lints and deprecations) are listed without failing the check;
+      # warnings and errors fail it.
+      - run: flutter analyze --no-fatal-infos
+      - run: flutter test
+
+  store:
+    name: Store listing
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.sha }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      # The check comes from ieasybooks/release, pinned in bun.lock; nothing
+      # else is needed, so no lifecycle scripts run.
+      - run: bun install --frozen-lockfile --ignore-scripts
+      - run: bun run store:check
+
+  # The release lane loads with the gems Gemfile.lock pins: a broken Fastfile
+  # or Gemfile would otherwise show only when a release runs.
+  fastlane:
+    name: Fastlane
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.sha }}
+          persist-credentials: false
+      - uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+        with:
+          ruby-version: "3.4"
+          bundler-cache: true
+      - run: bundle exec fastlane lanes
