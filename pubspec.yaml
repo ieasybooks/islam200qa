@@ -36,7 +36,6 @@ dependencies:
   share_plus: ^11.1.0
   showcaseview: 4.0.1
   shared_preferences:
-  flutter_markdown: ^0.6.9
   flutter_native_splash: ^2.4.6
   url_launcher: ^6.3.2
   flutter_widget_from_html_core: any
