@@ -1,0 +1,47 @@
+// A Gradle init script for CI only. GitHub's runners share IP addresses that Maven Central
+// rate-limits (HTTP 429), which fails a build whose downloads aren't cached yet. Every build in
+// the composite, the app and Flutter's own Gradle plugin alike, tries Google's mirror of Maven
+// Central first; the repositories the builds declare stay behind it.
+import org.gradle.api.initialization.resolve.RepositoriesMode
+
+def mirror = "https://maven-central.storage-download.googleapis.com/maven2/"
+
+beforeSettings { settings ->
+    // Before the settings script, so the mirror comes first.
+    settings.pluginManagement.repositories {
+        maven { url = mirror }
+    }
+    settings.dependencyResolutionManagement.repositories {
+        maven { url = mirror }
+    }
+}
+
+settingsEvaluated { settings ->
+    // A build that declares no plugin repositories of its own, like Flutter's Gradle plugin,
+    // keeps Gradle's default, the Gradle Plugin Portal, behind the mirror.
+    if (settings.pluginManagement.repositories.size() == 1) {
+        settings.pluginManagement.repositories {
+            gradlePluginPortal()
+        }
+    }
+    // Flutter's own Gradle plugin takes repositories only from its settings, and fails on
+    // project ones. The app's projects declare their own, which win over the settings'.
+    if (settings.dependencyResolutionManagement.repositoriesMode.get() == RepositoriesMode.PREFER_PROJECT) {
+        settings.gradle.allprojects { project ->
+            project.buildscript.repositories {
+                maven { url = mirror }
+            }
+            project.repositories {
+                maven { url = mirror }
+            }
+            // The mirror holds everything Maven Central does, so Maven Central itself goes: a
+            // lookup there for something only another repository has, like Flutter's engine,
+            // could still be refused.
+            project.afterEvaluate {
+                project.repositories.removeIf { repo ->
+                    repo instanceof MavenArtifactRepository && repo.url.host == "repo.maven.apache.org"
+                }
+            }
+        }
+    }
+}
