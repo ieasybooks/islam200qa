@@ -56,7 +56,7 @@ Any other `v*` tag is a dry run: push a throwaway one, such as `git tag v0-dry-r
 
 ## The store listing
 
-`store/` holds everything Google Play and AppGallery show besides the app itself, in Arabic, in [ieasybooks/release](https://github.com/ieasybooks/release)'s format (its README lists every file and limit). Each release sends it to both stores and overwrites edits made in their consoles, so change the listing here.
+`store/` holds everything Google Play and AppGallery show besides the app itself, in Arabic, in [ieasybooks/release](https://github.com/ieasybooks/release)'s format (its README lists every file and limit). Each release sends it to both stores and overwrites edits made in their consoles, so change the listing here. The settings a release doesn't send, Google Play's contact details and AppGallery's rating and privacy links, are in `store.json`'s `audit`: each store job checks them with `ieasybooks-release store audit` before uploading, and stops if the console differs.
 
 - `store.json`: the app's name in messages, the stores (`googlePlay`, `appGallery`), the Arabic listing's locale in each, and the AppGallery app ID.
 - `ar/`: the name, short description and description, as they were on Google Play and AppGallery on 19 November 2026.

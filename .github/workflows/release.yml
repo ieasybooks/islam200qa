@@ -282,6 +282,9 @@ jobs:
       - uses: ieasybooks/vault@1bce5652d3d2461b0c6d590c3358d8c877fe61c8 # v1.1.0
         with:
           files: GOOGLE_PLAY_SERVICE_ACCOUNT.json
+      # The settings a release doesn't send (contact details) still match store.json.
+      - name: Check Google Play's settings match store.json
+        run: ./node_modules/.bin/ieasybooks-release store audit --app . --store googlePlay
       - name: Upload to production with the listing
         env:
           STORE_METADATA_DIR: ${{ runner.temp }}/store
@@ -320,6 +323,9 @@ jobs:
       - uses: ieasybooks/vault@1bce5652d3d2461b0c6d590c3358d8c877fe61c8 # v1.1.0
         with:
           secrets: APPGALLERY_CONNECT_SERVICE_ACCOUNT
+      # The settings a release doesn't send (rating, privacy links) still match store.json.
+      - name: Check AppGallery's settings match store.json
+        run: ./node_modules/.bin/ieasybooks-release store audit --app . --store appGallery
       - name: Upload and submit for review
         run: |
           if [ "$DRY_RUN" = true ]; then
