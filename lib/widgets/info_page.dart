@@ -6,86 +6,89 @@ import 'package:islam200qa/info_texts.dart';
 import 'package:islam200qa/utils/screen_utils.dart';
 import 'package:islam200qa/utils/url_utils.dart';
 
-/// A page of text in Arabic, right to left, then in English, left to right,
-/// such as the privacy policy and the support page.
-class InfoPage extends StatefulWidget {
-  const InfoPage({Key? key, required this.texts}) : super(key: key);
+/// One of the four pages (About, the privacy policy, the terms of use, and
+/// contact and support) in one language: Arabic, right to left, or English,
+/// left to right. Its app bar opens the same page in the other language, and
+/// it ends with links to the other three pages in its language.
+class InfoPage extends StatelessWidget {
+  const InfoPage({
+    Key? key,
+    required this.page,
+    required this.language,
+  }) : super(key: key);
 
-  final InfoTexts<InfoPageText> texts;
-
-  @override
-  State<InfoPage> createState() => _InfoPageState();
-}
-
-class _InfoPageState extends State<InfoPage> {
-  final GlobalKey _englishKey = GlobalKey();
+  final InfoPageId page;
+  final InfoLanguage language;
 
   @override
   Widget build(final BuildContext context) {
     FlutterNativeSplash.remove();
 
+    final bool english = language == InfoLanguage.en;
+    final InfoPageText text = infoTexts[page]!.of(language);
     final double horizontalPadding = getDeviceWidth(context) *
         getHorizontalPaddingPercentageByScreenSize(getScreenSize(context));
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.texts.ar.title),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            final StackRouter router = AutoRouter.of(context);
-            router.pop().then((isPopped) {
-              if (!isPopped) {
-                router.pushNamed('/');
-              }
-            });
-          },
-          tooltip: 'الرجوع',
-        ),
-        actions: [
-          TextButton(
+    return Directionality(
+      textDirection: english ? TextDirection.ltr : TextDirection.rtl,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(text.label),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              final BuildContext? english = _englishKey.currentContext;
-              if (english != null) {
-                Scrollable.ensureVisible(
-                  english,
-                  duration: const Duration(milliseconds: 300),
-                );
-              }
+              final StackRouter router = AutoRouter.of(context);
+              router.pop().then((isPopped) {
+                if (!isPopped) {
+                  router.pushNamed('/');
+                }
+              });
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.white),
-            child: const Text(
-              'English',
-              style: TextStyle(fontSize: 18),
-            ),
+            tooltip: english ? 'Back' : 'الرجوع',
           ),
-        ],
-        centerTitle: false,
-      ),
-      // Both languages are short, so they're built at once, which lets the
-      // English button scroll to the English part.
-      body: SingleChildScrollView(
-        child: SelectionArea(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(
-              horizontalPadding,
-              10.0,
-              horizontalPadding,
-              10.0,
+          actions: [
+            // The same page in the other language, in this page's place.
+            TextButton(
+              onPressed: () {
+                AutoRouter.of(context).replaceNamed(
+                  infoPath(
+                    page,
+                    english ? InfoLanguage.ar : InfoLanguage.en,
+                  ),
+                );
+              },
+              style: TextButton.styleFrom(foregroundColor: Colors.white),
+              child: Text(
+                english ? 'العربية' : 'English',
+                style: const TextStyle(fontSize: 18),
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _InfoCard(
-                  text: widget.texts.ar,
-                  textDirection: TextDirection.rtl,
-                ),
-                _InfoCard(
-                  key: _englishKey,
-                  text: widget.texts.en,
-                  textDirection: TextDirection.ltr,
-                ),
-              ],
+          ],
+          centerTitle: false,
+        ),
+        body: SingleChildScrollView(
+          child: SelectionArea(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                horizontalPadding,
+                10.0,
+                horizontalPadding,
+                10.0,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (page == InfoPageId.about)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 5.0),
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        height: 250,
+                      ),
+                    ),
+                  _InfoCard(page: page, language: language, text: text),
+                ],
+              ),
             ),
           ),
         ),
@@ -96,13 +99,14 @@ class _InfoPageState extends State<InfoPage> {
 
 class _InfoCard extends StatelessWidget {
   const _InfoCard({
-    Key? key,
+    required this.page,
+    required this.language,
     required this.text,
-    required this.textDirection,
-  }) : super(key: key);
+  });
 
+  final InfoPageId page;
+  final InfoLanguage language;
   final InfoPageText text;
-  final TextDirection textDirection;
 
   @override
   Widget build(final BuildContext context) {
@@ -129,69 +133,101 @@ class _InfoCard extends StatelessWidget {
           style: const TextStyle(fontSize: 18, color: Colors.black54),
         ),
       const SizedBox(height: 8),
-      Text(text.lead, style: bodyStyle),
+      _LinkedText(text: text.lead, style: bodyStyle),
     ];
 
     for (final InfoSection section in text.sections) {
       children.add(const SizedBox(height: 16));
       children.add(Text(section.title, style: sectionStyle));
-      for (final String paragraph in section.body) {
+      for (final String paragraph in section.paragraphs) {
         children.add(
           Padding(
             padding: const EdgeInsets.only(top: 4),
-            child: Text(paragraph, style: bodyStyle),
-          ),
-        );
-      }
-      for (final InfoLink link in section.links) {
-        children.add(
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: _InfoLinkText(link: link, style: bodyStyle),
+            child: _LinkedText(text: paragraph, style: bodyStyle),
           ),
         );
       }
     }
 
-    return Directionality(
-      textDirection: textDirection,
-      child: Card(
-        margin: const EdgeInsets.only(bottom: 10.0),
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          side: BorderSide(color: primaryColor),
-          borderRadius: const BorderRadius.all(Radius.circular(5)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: children,
+    // The other three pages, in this page's language, each kept on one line.
+    children.add(
+      Padding(
+        padding: const EdgeInsets.only(top: 24),
+        child: SizedBox(
+          width: double.infinity,
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 24,
+            runSpacing: 4,
+            children: [
+              for (final InfoPageId other in InfoPageId.values)
+                if (other != page)
+                  _LinkedText(
+                    text: '[${infoTexts[other]!.of(language).label}]'
+                        '(${infoPath(other, language)})',
+                    style: bodyStyle,
+                  ),
+            ],
           ),
+        ),
+      ),
+    );
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 10.0),
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: primaryColor),
+        borderRadius: const BorderRadius.all(Radius.circular(5)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
         ),
       ),
     );
   }
 }
 
-/// A link that stays selectable: a path such as /privacy opens in the app,
+/// A paragraph whose links ([their words](address), see [InfoSection]) stay
+/// selectable with the rest of it: one of these pages opens in the app,
 /// anything else (a web page, mailto:) outside it.
-class _InfoLinkText extends StatefulWidget {
-  const _InfoLinkText({required this.link, required this.style});
+class _LinkedText extends StatefulWidget {
+  const _LinkedText({
+    required this.text,
+    required this.style,
+  });
 
-  final InfoLink link;
+  final String text;
   final TextStyle style;
 
   @override
-  State<_InfoLinkText> createState() => _InfoLinkTextState();
+  State<_LinkedText> createState() => _LinkedTextState();
 }
 
-class _InfoLinkTextState extends State<_InfoLinkText> {
-  late final TapGestureRecognizer _recognizer = TapGestureRecognizer()
-    ..onTap = _open;
+class _LinkedTextState extends State<_LinkedText> {
+  late List<InfoTextPart> _parts;
+  late List<TapGestureRecognizer?> _recognizers;
 
-  void _open() {
-    final String url = widget.link.url;
+  void _parse() {
+    _parts = infoTextParts(widget.text);
+    _recognizers = [
+      for (final InfoTextPart part in _parts)
+        part.url == null
+            ? null
+            : (TapGestureRecognizer()..onTap = () => _open(part.url!)),
+    ];
+  }
+
+  void _disposeRecognizers() {
+    for (final TapGestureRecognizer? recognizer in _recognizers) {
+      recognizer?.dispose();
+    }
+  }
+
+  void _open(final String url) {
     if (url.startsWith('/')) {
       AutoRouter.of(context).pushNamed(url);
     } else {
@@ -200,28 +236,46 @@ class _InfoLinkTextState extends State<_InfoLinkText> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _parse();
+  }
+
+  @override
+  void didUpdateWidget(final _LinkedText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.text != widget.text) {
+      _disposeRecognizers();
+      _parse();
+    }
+  }
+
+  @override
   void dispose() {
-    _recognizer.dispose();
+    _disposeRecognizers();
     super.dispose();
   }
 
   @override
   Widget build(final BuildContext context) {
-    final bool isAddress = widget.link.url.startsWith('mailto:');
+    final TextStyle linkStyle = widget.style.copyWith(
+      color: Colors.blue,
+      decoration: TextDecoration.underline,
+      decorationColor: Colors.blue,
+    );
 
     return Text.rich(
       TextSpan(
-        text: widget.link.label,
-        style: widget.style.copyWith(
-          color: Colors.blue,
-          decoration: TextDecoration.underline,
-          decorationColor: Colors.blue,
-        ),
-        recognizer: _recognizer,
-        mouseCursor: SystemMouseCursors.click,
+        style: widget.style,
+        children: [
+          for (int i = 0; i < _parts.length; ++i)
+            TextSpan(
+              text: _parts[i].text,
+              style: _recognizers[i] == null ? null : linkStyle,
+              recognizer: _recognizers[i],
+            ),
+        ],
       ),
-      // An email address reads left to right in Arabic too.
-      textDirection: isAddress ? TextDirection.ltr : null,
     );
   }
 }

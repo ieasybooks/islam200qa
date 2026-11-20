@@ -5,15 +5,23 @@ import 'package:islam200qa/pages/privacy_page.dart';
 import 'package:islam200qa/pages/section_page.dart';
 import 'package:islam200qa/pages/sections_page.dart';
 import 'package:islam200qa/pages/support_page.dart';
+import 'package:islam200qa/pages/terms_page.dart';
 import 'package:islam200qa/router/guards/check_if_section_exists.dart';
 import 'package:islam200qa/router/guards/redirect_to_bookmark.dart';
 
 @MaterialAutoRouter(
   replaceInRouteName: 'Page,Route',
   routes: <AutoRoute>[
-    AutoRoute(path: '/privacy', page: PrivacyPage),
-    AutoRoute(path: '/support', page: SupportPage),
+    // About, the privacy policy, the terms of use, and contact and support:
+    // in Arabic, and in English under /en (info_texts.dart).
     AutoRoute(path: '/about', page: AboutPage),
+    AutoRoute(path: '/privacy', page: PrivacyPage),
+    AutoRoute(path: '/terms', page: TermsPage),
+    AutoRoute(path: '/support', page: SupportPage),
+    AutoRoute(path: '/en/about', page: EnglishAboutPage),
+    AutoRoute(path: '/en/privacy', page: EnglishPrivacyPage),
+    AutoRoute(path: '/en/terms', page: EnglishTermsPage),
+    AutoRoute(path: '/en/support', page: EnglishSupportPage),
     CustomRoute(
       name: 'SectionsPageParent',
       path: '/',
