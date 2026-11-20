@@ -1,0 +1,113 @@
+===== Islam in 200 Q&A / about / en
+About Islam in 200 Q&A
+Islam in 200 Q&A presents the Islamic creed in 200 questions and answers, each with a video and an audio explanation.
+## What's in Islam in 200 Q&A
+The book's 200 questions and answers, built into the app so you can read them offline, with a video and an audio explanation for every question. Bookmark where you stopped, and share any question with a link.
+## Where the content comes from
+The text is Sheikh Hafiz ibn Ahmad al-Hakami's book A'lam al-Sunnah al-Manshurah, and the explanations are by Sheikh Ibrahim Rafiq.
+## Who makes it
+Islam in 200 Q&A is made by EasyBooks. It's free, has no ads and works without an account.
+Follow EasyBooks on Telegram, YouTube, X, Facebook and GitHub.
+
+===== Islam in 200 Q&A / about / ar
+عن «الإسلام في ٢٠٠ سؤال وجواب»
+يقدّم تطبيق «الإسلام في ٢٠٠ سؤال وجواب» العقيدة الإسلامية في مئتي سؤال وجواب، مع شرح مرئي وصوتي لكل سؤال.
+## ما يقدّمه التطبيق
+أسئلة الكتاب المئتان وأجوبتها محفوظة داخل التطبيق، فتقرؤها دون اتصال بالإنترنت، ولكل سؤال شرح مرئي وصوتي. ويمكنك وضع علامة عند السؤال الذي توقفت عنده، ومشاركة أي سؤال برابط.
+## مصدر المحتوى
+نص التطبيق كتاب «أعلام السنة المنشورة لاعتقاد الطائفة الناجية المنصورة» للشيخ حافظ بن أحمد الحكمي، بشرح مرئي وصوتي للشيخ إبراهيم رفيق.
+## مَن يطوّر التطبيق
+«الإسلام في ٢٠٠ سؤال وجواب» من تطوير الكتب المُيسّرة، وهو مجاني وخالٍ من الإعلانات، ويمكنك استخدامه دون حساب.
+تابع الكتب المُيسّرة على تيليجرام ويوتيوب وX وفيسبوك وGitHub.
+
+===== Islam in 200 Q&A / privacy / en
+Privacy policy
+This policy explains how the Islam in 200 Q&A app for Android and the islam200qa.ieasybooks.com website handle information. Islam in 200 Q&A is made by EasyBooks, and you can use it without an account.
+## Information stored on your device
+Islam in 200 Q&A saves only two things on your device, or in your browser on the website: the question you bookmarked, and that it has shown you its introductory tour.
+None of this is sent to us, and you can remove it by clearing the app's or the site's data.
+## Services we use
+Each question's video explanation plays in YouTube's player, and its audio explanation also loads from Google. Your device then connects to their servers directly, which receive technical information such as your IP address and may use cookies, under their own privacy policies.
+## Advertising and analytics
+Islam in 200 Q&A has no ads and doesn't track you across apps or websites. The islam200qa.ieasybooks.com website keeps aggregate statistics on its visits and loading speed, without cookies. We don't sell any data or use it for advertising.
+## Permissions
+Islam in 200 Q&A doesn't ask for access to your location, camera, microphone or contacts.
+## Contact and privacy requests
+If you write to us, we receive what you send, such as your name, email address and message, and use it only to reply to you. To ask about privacy, or to have your messages deleted, email easybooksdev@gmail.com.
+## Changes to this policy
+We publish the current version of this policy, and the date it was last updated, on this page.
+
+===== Islam in 200 Q&A / privacy / ar
+سياسة الخصوصية
+تبيّن هذه السياسة كيف نتعامل مع المعلومات في تطبيق «الإسلام في ٢٠٠ سؤال وجواب» على Android وموقع islam200qa.ieasybooks.com. التطبيق من تطوير الكتب المُيسّرة، ويمكنك استخدامه دون حساب.
+## ما يُحفظ على جهازك
+لا يحفظ التطبيق على جهازك، أو في متصفحك عند استخدام الموقع، إلا أمرين: السؤال الذي وضعت عنده علامة، وأن الجولة التعريفية عُرضت عليك.
+ولا يُرسَل شيء من ذلك إلينا، ويمكنك حذفه بمسح بيانات التطبيق أو الموقع.
+## الخدمات التي نستخدمها
+يُعرض الشرح المرئي لكل سؤال عبر مشغّل يوتيوب، ويُحمَّل شرحه الصوتي من خوادم Google. وعندئذ يتصل جهازك بخوادم هذه الخدمات مباشرة، فتتلقى معلومات تقنية مثل عنوان IP، وقد تستخدم ملفات تعريف الارتباط، وفق سياسات الخصوصية الخاصة بها.
+## الإعلانات والإحصاءات
+لا يعرض التطبيق إعلانات، ولا يتتبّعك في التطبيقات أو المواقع الأخرى. ويجمع موقع islam200qa.ieasybooks.com إحصاءات إجمالية عن زياراته وسرعة تحميل صفحاته، دون استخدام ملفات تعريف الارتباط. ولا نبيع أي بيانات، ولا نستخدمها لأغراض إعلانية.
+## الأذونات
+لا يطلب التطبيق إذن الوصول إلى موقعك الجغرافي أو الكاميرا أو الميكروفون أو جهات الاتصال.
+## التواصل وطلبات الخصوصية
+إذا راسلتنا، نتلقى ما ترسله إلينا، كاسمك وبريدك الإلكتروني ونص رسالتك، ولا نستخدمه إلا للرد عليك. ولأي سؤال عن الخصوصية، أو لطلب حذف رسائلك، راسلنا على easybooksdev@gmail.com.
+## تحديثات هذه السياسة
+ننشر في هذه الصفحة النسخة الحالية من هذه السياسة، مع تاريخ آخر تحديث لها.
+
+===== Islam in 200 Q&A / terms / en
+Terms of use
+These terms cover your use of the Islam in 200 Q&A app for Android and the islam200qa.ieasybooks.com website. By using Islam in 200 Q&A, you agree to them. Islam in 200 Q&A is made by EasyBooks and is free.
+## Using Islam in 200 Q&A
+Use Islam in 200 Q&A lawfully and respectfully. Don't disrupt it, try to get into parts of it you aren't allowed to reach, or send it so many requests that it slows down for others.
+## Content and rights
+Islam in 200 Q&A credits the book to Sheikh Hafiz ibn Ahmad al-Hakami and the explanations to Sheikh Ibrahim Rafiq. Their rights stay with their owners, and Islam in 200 Q&A claims no ownership of them.
+If you own rights in something Islam in 200 Q&A shows and want it corrected, credited differently or removed, email easybooksdev@gmail.com with a link to it and your relationship to it. We review every request and act on it.
+## Accuracy and availability
+Islam in 200 Q&A is provided free and as is, without warranties of any kind. Its content may change, become unavailable or contain mistakes, and we don't guarantee that it will always work or be free of errors. If you find a mistake, please report it.
+## Limitation of liability
+As far as the law allows, EasyBooks isn't liable for any loss or damage arising from using, or being unable to use, Islam in 200 Q&A or its content.
+## Changes to these terms
+We may update these terms. We publish the current version here, with the date it was last updated. Continuing to use Islam in 200 Q&A after an update means you accept it.
+## Contact
+For questions about these terms, email easybooksdev@gmail.com.
+
+===== Islam in 200 Q&A / terms / ar
+شروط الاستخدام
+تنظّم هذه الشروط استخدامك لتطبيق «الإسلام في ٢٠٠ سؤال وجواب» على Android وموقع islam200qa.ieasybooks.com، ويُعدّ استخدامك له موافقةً عليها. التطبيق من تطوير الكتب المُيسّرة، وهو مجاني.
+## استخدام «الإسلام في ٢٠٠ سؤال وجواب»
+استخدم التطبيق استخدامًا مشروعًا ولائقًا، ولا تحاول تعطيله، أو الوصول إلى أجزاء غير مسموح لك بها، أو إرسال طلبات كثيرة تُبطئه على المستخدمين الآخرين.
+## المحتوى والحقوق
+ينسب التطبيق الكتاب إلى مؤلفه الشيخ حافظ بن أحمد الحكمي، والشرح إلى الشيخ إبراهيم رفيق. وتبقى الحقوق كلها لأصحابها، ولا يدّعي التطبيق ملكية شيء منها.
+إذا كنت صاحب حق في مادة يعرضها التطبيق، وأردت تصحيحها أو تعديل نسبتها أو حذفها، فراسلنا على easybooksdev@gmail.com، وأرفق رابطها وبيّن صلتك بها. ونحن نراجع كل طلب ونتخذ الإجراء المناسب.
+## الدقة والتوافر
+يُقدَّم التطبيق مجانًا و«كما هو»، دون ضمانات من أي نوع. وقد يتغير محتواه أو يصبح غير متاح أو تقع فيه أخطاء، ولا نضمن أن يعمل دائمًا أو يخلو من الأعطال. وإن وجدت خطأ، فنرجو أن تبلغنا به.
+## حدود المسؤولية
+في حدود ما يسمح به القانون، لا تتحمل الكتب المُيسّرة أي مسؤولية عن خسارة أو ضرر ينشأ عن استخدام التطبيق أو محتواه، أو عن تعذّر استخدامهما.
+## تحديثات هذه الشروط
+قد نحدّث هذه الشروط من حين لآخر، وننشر نسختها الحالية في هذه الصفحة مع تاريخ آخر تحديث. واستمرارك في استخدام التطبيق بعد التحديث يعني قبولك للشروط المحدّثة.
+## التواصل
+لأي سؤال عن هذه الشروط، راسلنا على easybooksdev@gmail.com.
+
+===== Islam in 200 Q&A / support / en
+Contact & support
+Islam in 200 Q&A is made by EasyBooks. For questions and suggestions, or to report a problem or a mistake, contact us.
+## Email us
+Our address for questions, support and privacy requests: easybooksdev@gmail.com. You can also open an issue on GitHub; it's public, so keep personal information out of it.
+## Reporting a problem
+If it's about something specific in Islam in 200 Q&A, send its link or tell us where to find it. If it's about the app or the website, include your device, its operating system version, Islam in 200 Q&A's version and what happened before it. Don't send passwords or sensitive information.
+## Content and rights
+If you own rights in something Islam in 200 Q&A shows, see “Content and rights” in the terms of use, or email us.
+## Privacy
+Islam in 200 Q&A works without an account and doesn't track you across apps or websites. For how we handle information, or for a privacy request, see the privacy policy.
+
+===== Islam in 200 Q&A / support / ar
+التواصل والدعم
+«الإسلام في ٢٠٠ سؤال وجواب» من تطوير الكتب المُيسّرة. لأي سؤال أو اقتراح، أو للإبلاغ عن مشكلة أو خطأ، تواصل معنا.
+## راسلنا
+بريدنا الإلكتروني للأسئلة والدعم وطلبات الخصوصية: easybooksdev@gmail.com. ويمكنك كذلك فتح بلاغ على GitHub، وهو علني، فلا تضع فيه معلومات شخصية.
+## الإبلاغ عن مشكلة
+إن كانت ملاحظتك عن شيء محدد في التطبيق، فأرسل رابطه أو أخبرنا بمكانه. وإن كانت المشكلة في عمل التطبيق أو الموقع، فاذكر نوع جهازك، وإصدار نظام تشغيله، وإصدار التطبيق، وما حدث قبل ظهورها. ولا ترسل إلينا كلمات مرور أو أي معلومات حساسة.
+## المحتوى والحقوق
+إذا كنت صاحب حق في مادة يعرضها التطبيق، فراجع قسم «المحتوى والحقوق» في شروط الاستخدام، أو راسلنا.
+## الخصوصية
+يمكنك استخدام التطبيق دون حساب، وهو لا يتتبّعك في التطبيقات أو المواقع الأخرى. ولمعرفة كيف نتعامل مع المعلومات، أو لتقديم طلب يتعلق بالخصوصية، راجع سياسة الخصوصية.
