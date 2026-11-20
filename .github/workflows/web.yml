@@ -1,0 +1,156 @@
+name: Release web
+
+# Deploys a commit of main to islam200qa.ieasybooks.com, then checks the site
+# serves it. release-please.yml calls it with each commit pushed to main, once
+# that commit's checks passed. Run by hand on main, it deploys main's newest
+# commit, which needs a "Checks" status saying its checks passed. See
+# docs/web-deployment.md.
+#
+# The site only moves forward along main. scripts/deploy-order.ts compares the
+# commit with the live one, which each deploy records as its Worker version's
+# message: a newer commit deploys, the live one is checked again without
+# deploying, and an older one is skipped, since runs can start out of order.
+#
+# The vault serves the deploy token only to this workflow run by hand on main,
+# and to its jobs that release-please.yml calls on main, in runs AliOsm started.
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      sha:
+        description: The commit of main to deploy, whose checks passed
+        type: string
+        required: false
+      access-check:
+        description: Only check the vault gives this workflow the website's deploy token and refuses it other secrets
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    name: Web
+    if: ${{ !inputs.access-check }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # One deploy at a time, called or run by hand, from reading the live
+    # commit to checking the site. The others wait their turn instead of
+    # GitHub cancelling all but the newest: queue: max keeps up to 100 waiting.
+    concurrency:
+      group: islam200qa-web-production
+      queue: max
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+      statuses: read
+    env:
+      WRANGLER_SEND_METRICS: "false"
+    steps:
+      - name: Pick the commit
+        id: commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CALLED_SHA: ${{ inputs.sha }}
+        run: |
+          if [ -n "$CALLED_SHA" ]; then
+            # From release-please.yml, after its checks passed on this commit.
+            if ! [[ $CALLED_SHA =~ ^[0-9a-f]{40}$ ]]; then
+              echo "::error::release-please.yml passed $CALLED_SHA, which isn't a full commit SHA."
+              exit 1
+            fi
+            sha=$CALLED_SHA
+          else
+            if [ "$GITHUB_REF" != refs/heads/main ]; then
+              echo "::error::Release web deploys main; run it on main."
+              exit 1
+            fi
+            # Main's newest commit when the run was started.
+            sha=$GITHUB_SHA
+            state=$(gh api "repos/$GITHUB_REPOSITORY/commits/$sha/status" \
+              --jq '[.statuses[] | select(.context == "Checks")][0].state // "missing"')
+            if [ "$state" != success ]; then
+              echo "::error::Main's newest commit, $sha, has no passing Checks status ($state). Wait for release-please.yml's checks on it, or re-run them."
+              exit 1
+            fi
+          fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "Deploying $sha to islam200qa.ieasybooks.com, unless a newer commit is live."
+      # This exact commit, never main by name, which may have moved on.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ steps.commit.outputs.sha }}
+          persist-credentials: false
+      # mise.toml pins Flutter for Macs and the workflows alike.
+      - name: Read the Flutter version
+        id: flutter
+        run: |
+          version=$(sed -n 's/^flutter = "\(.*\)"$/\1/p' mise.toml)
+          test -n "$version" || { echo "::error::mise.toml pins no Flutter version."; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: stable
+          flutter-version: ${{ steps.flutter.outputs.version }}
+      # Wrangler runs on Node.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      - run: bun install --frozen-lockfile
+      - run: flutter pub get --enforce-lockfile
+      # Before the deploy token is in the job's environment.
+      - name: Build the release
+        run: bun run web:build
+
+      # A token that can deploy islam200qa-web and no other Worker.
+      - uses: ieasybooks/vault@1bce5652d3d2461b0c6d590c3358d8c877fe61c8 # v1.1.0
+        with:
+          secrets: ISLAM200QA_WEB_DEPLOY_TOKEN=CLOUDFLARE_API_TOKEN
+      - name: Compare with the live commit
+        id: order
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ steps.commit.outputs.sha }}
+        run: bun scripts/deploy-order.ts "$SHA"
+      - name: Deploy islam200qa.ieasybooks.com
+        if: steps.order.outputs.action == 'deploy'
+        env:
+          SHA: ${{ steps.commit.outputs.sha }}
+        run: bun run web:deploy --message "$SHA" --tag "${SHA:0:12}"
+      - name: Check islam200qa.ieasybooks.com serves it
+        if: steps.order.outputs.action != 'skip'
+        run: bun scripts/check-live.ts
+
+  # release-please.yml's vault access check (docs/web-deployment.md): this
+  # workflow's jobs get the website's deploy token, and not other apps'
+  # tokens and keys or the store secrets. It deploys and prints nothing.
+  access-check:
+    name: Vault access check
+    if: ${{ inputs.access-check }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: islam200qa-web-access-check
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      # Each asked for alone, before the deploy token, and refused because no
+      # rule matches this job.
+      - uses: ieasybooks/vault@1bce5652d3d2461b0c6d590c3358d8c877fe61c8 # v1.1.0
+        with:
+          expect-refused: |
+            ANDROID_UPLOAD_KEYSTORE
+            GOOGLE_PLAY_SERVICE_ACCOUNT
+            SHAWARED_WEB_DEPLOY_TOKEN
+            MOFIED_WEB_DEPLOY_TOKEN
+            MUSICLESS_WEB_DEPLOY_TOKEN
+          secrets: ISLAM200QA_WEB_DEPLOY_TOKEN=DEPLOY_TOKEN
+      - name: The vault serves the website's deploy token here
+        run: test -n "$DEPLOY_TOKEN" && echo "The vault served ISLAM200QA_WEB_DEPLOY_TOKEN."

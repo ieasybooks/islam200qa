@@ -342,8 +342,9 @@ jobs:
           fi
 
   # release-please.yml's vault access check (docs/releasing.md): this
-  # workflow's jobs get the store secrets and the upload key, and not other
-  # apps' keys, deploy tokens or upload keys. It builds and prints nothing.
+  # workflow's jobs get the store secrets and the upload key, and not the
+  # website's deploy token or other apps' keys, deploy tokens or upload keys.
+  # It builds and prints nothing.
   access-check:
     name: Vault access check
     if: ${{ inputs.access-check }}
@@ -358,6 +359,7 @@ jobs:
       - uses: ieasybooks/vault@1bce5652d3d2461b0c6d590c3358d8c877fe61c8 # v1.1.0
         with:
           expect-refused: |
+            ISLAM200QA_WEB_DEPLOY_TOKEN
             MOFIED_ANDROID_KEYSTORE
             MOFIED_WEB_DEPLOY_TOKEN
             SHAWARED_WEB_DEPLOY_TOKEN

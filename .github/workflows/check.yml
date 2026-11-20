@@ -1,10 +1,10 @@
 name: Check
 
 # Every check, on pull requests and, called with the commit, on main
-# (release-please.yml's Checks status, which releases depend on): Flutter's
-# analysis and tests, the store listing with pubspec.yaml's version, and that
-# fastlane loads the release lane. The Android build runs in release.yml only
-# (docs/releasing.md).
+# (release-please.yml's Checks status, which deploys and releases depend on):
+# Flutter's analysis and tests, the website as it deploys, the store listing
+# with pubspec.yaml's version, and that fastlane loads the release lane. The
+# Android build runs in release.yml only (docs/releasing.md).
 on:
   pull_request:
   workflow_call:
@@ -17,10 +17,11 @@ on:
 permissions:
   contents: read
 
-# A new push to a pull request replaces its running checks. Runs on main each
-# get their own group: a release waits on its run, which nothing may cancel.
+# A new push to a pull request replaces its running checks. Checks on main
+# each get their own group, by run and commit (a run can check two): a deploy
+# or release waits on them, which nothing may cancel.
 concurrency:
-  group: check-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  group: check-${{ github.event_name == 'pull_request' && github.ref || format('{0}-{1}', github.run_id, inputs.sha) }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
@@ -49,6 +50,49 @@ jobs:
       # warnings and errors fail it.
       - run: flutter analyze --no-fatal-infos
       - run: flutter test
+
+  # The website as it deploys (docs/web-deployment.md): its scripts' tests,
+  # the release build and its checks, the hosting tests against the build as
+  # Cloudflare serves it (wrangler dev), with headless Chromium opening its
+  # pages, and Wrangler's dry run of the deploy. None needs Cloudflare
+  # credentials.
+  web:
+    name: Web
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      WRANGLER_SEND_METRICS: "false"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.sha }}
+          persist-credentials: false
+      - name: Read the Flutter version
+        id: flutter
+        run: |
+          version=$(sed -n 's/^flutter = "\(.*\)"$/\1/p' mise.toml)
+          test -n "$version" || { echo "::error::mise.toml pins no Flutter version."; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2.23.0
+        with:
+          channel: stable
+          flutter-version: ${{ steps.flutter.outputs.version }}
+      # Wrangler runs on Node.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.4
+      - run: bun install --frozen-lockfile
+      - run: flutter pub get --enforce-lockfile
+      - run: bun run test
+      - run: bun run web:build
+      # The browser the hosting tests drive: Chromium's headless shell, the
+      # build the Playwright in bun.lock takes, with its system libraries.
+      - run: ./node_modules/.bin/playwright install --with-deps --only-shell chromium
+      - run: bun run web:test
+      - run: bun run web:deploy:check
 
   store:
     name: Store listing

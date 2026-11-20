@@ -5,9 +5,17 @@
   "scripts": {
     "release-info": "ieasybooks-release release-info --app .",
     "store:check": "ieasybooks-release store check --app .",
-    "fastlane:check": "bundle exec fastlane lanes"
+    "fastlane:check": "bundle exec fastlane lanes",
+    "test": "bun test scripts/",
+    "web:build": "bun scripts/web-build.ts",
+    "web:test": "bun scripts/test-hosting.ts",
+    "web:preview": "wrangler dev --local --ip 127.0.0.1 --port 8787 --inspector-port 0",
+    "web:deploy:check": "wrangler deploy --dry-run",
+    "web:deploy": "wrangler deploy"
   },
   "devDependencies": {
-    "@ieasybooks/release": "github:ieasybooks/release#c361cc1146ffe9349e3b6e592c5bfa0260499bf6"
+    "@ieasybooks/release": "github:ieasybooks/release#c361cc1146ffe9349e3b6e592c5bfa0260499bf6",
+    "playwright": "1.65.1",
+    "wrangler": "4.158.0"
   }
 }

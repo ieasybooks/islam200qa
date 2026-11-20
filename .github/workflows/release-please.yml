@@ -3,33 +3,36 @@ name: Release please
 # On each push to main, release-please keeps a release pull request open with
 # the app's next version (pubspec.yaml) and changelog, from the Conventional
 # Commits since its last release. Merging it tags the app (v<version>) and
-# creates its GitHub release. This workflow then runs every check (check.yml)
-# on the commit it tagged, or on the pushed commit when it tagged nothing,
-# marks the commit with a "Checks" status saying how they ended, and once they
-# passed releases the app to Google Play and AppGallery (release.yml) when it
-# tagged it. The release builds exactly that commit. See docs/releasing.md.
+# creates its GitHub release. This workflow runs every check (check.yml) on
+# the pushed commit, marks it with a "Checks" status saying how they ended,
+# and once they passed deploys it to islam200qa.ieasybooks.com (web.yml).
+# When release-please tags the app, it releases it to Google Play and
+# AppGallery (release.yml) from the commit it tagged, once that commit's
+# checks passed: the pushed one, or an earlier one when the run for the
+# release pull request's merge tagged nothing (it failed, say) and this run
+# tagged it, which then gets its own checks and status.
 #
-# The website, islam200qa.ieasybooks.com, isn't released here: Netlify builds
-# and hosts it.
+# Each builds exactly its commit. See docs/releasing.md and
+# docs/web-deployment.md.
 #
 # Tags made with GITHUB_TOKEN start no workflows, so this workflow calls the
-# release workflow itself, and its jobs run as this workflow on main. The vault
-# knows them by this file's name and serves them the release secrets only in
+# release workflows itself, and their jobs run as this workflow on main. The
+# vault knows them by this file's name and serves each its own secrets only in
 # runs Ali (AliOsm) started. When someone else pushes, the checks still run and
 # nothing ships; a note says so. Re-running doesn't help, as a re-run keeps the
-# pusher's identity: Ali runs Release app (dry-run unticked) on the v tag
-# instead.
+# pusher's identity: Ali runs Release web on main, and Release app (dry-run
+# unticked) on the v tag, instead.
 #
 # Run by hand with access-check ticked, it releases nothing and only checks
-# that the vault gives release.yml's jobs their own secrets and refuses them
-# other apps' keys and deploy tokens.
+# that the vault gives release.yml's and web.yml's jobs their own secrets and
+# refuses them each other's and other apps' keys and deploy tokens.
 on:
   push:
     branches: [main]
   workflow_dispatch:
     inputs:
       access-check:
-        description: Only check the vault's rules for the release workflow; release nothing
+        description: Only check the vault's rules for the release workflows; release nothing
         type: boolean
         default: false
 
@@ -42,8 +45,13 @@ jobs:
     if: github.ref == 'refs/heads/main' && !inputs.access-check
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # One run at a time, each in turn: queue: max keeps up to 100 waiting,
+    # where GitHub would cancel all but the newest, and a run cancelled
+    # before release-please tags the release pull request's merge leaves the
+    # tag to a later push's run.
     concurrency:
       group: release-please
+      queue: max
       cancel-in-progress: false
     permissions:
       contents: write
@@ -51,21 +59,32 @@ jobs:
     outputs:
       app: ${{ steps.release.outputs.release_created }}
       app-tag: ${{ steps.release.outputs.tag_name }}
-      sha: ${{ steps.commit.outputs.sha }}
+      app-sha: ${{ steps.app.outputs.sha }}
+      app-apart: ${{ steps.app.outputs.apart }}
     steps:
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         id: release
-      # What the checks run on and the release jobs ship: the commit
-      # release-please tagged, which may not be the pushed one when pushes
-      # queue up, or the pushed commit when it tagged nothing.
-      - name: Pick the commit to check
-        id: commit
+      # The commit the app release ships: the one release-please tagged,
+      # which is an earlier one than the pushed commit when this run tagged a
+      # release pull request's merge that an earlier run didn't.
+      - name: Pick the app's commit
+        id: app
+        if: steps.release.outputs.release_created == 'true'
         env:
           APP_SHA: ${{ steps.release.outputs.sha }}
         run: |
-          sha=${APP_SHA:-$GITHUB_SHA}
-          echo "sha=$sha" >> "$GITHUB_OUTPUT"
-          echo "Checking $sha."
+          if ! [[ $APP_SHA =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::release-please tagged the app without a full commit SHA ($APP_SHA)."
+            exit 1
+          fi
+          echo "sha=$APP_SHA" >> "$GITHUB_OUTPUT"
+          if [ "$APP_SHA" = "$GITHUB_SHA" ]; then
+            echo "apart=false" >> "$GITHUB_OUTPUT"
+            echo "The app releases from the pushed commit, $APP_SHA."
+          else
+            echo "apart=true" >> "$GITHUB_OUTPUT"
+            echo "The app releases from $APP_SHA, which release-please tagged; the site deploys the pushed $GITHUB_SHA."
+          fi
 
   # The checks GitHub starts on GITHUB_TOKEN's pull requests wait for someone
   # to approve them, and the release pull request needs none: its merge is
@@ -134,24 +153,39 @@ jobs:
             -f description="${description:0:140}" \
             -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > /dev/null
 
-  # Every check, on the commit the release jobs would ship.
+  # Every check, on the pushed commit, which the site deploys. It doesn't
+  # wait for release-please, so a push is checked and deployed even when
+  # release-please fails.
   check:
     name: Check
-    needs: release-please
+    if: github.ref == 'refs/heads/main' && !inputs.access-check
     permissions:
       contents: read
     uses: ./.github/workflows/check.yml
     with:
-      sha: ${{ needs.release-please.outputs.sha }}
+      sha: ${{ github.sha }}
 
-  # Marks the commit with how its checks ended, as its "Checks" status, which
-  # a release from a tag pushed by hand needs (ieasybooks-release
-  # verify-commit). It runs however they ended, also on a re-run, so a later
-  # run whose checks failed or was cancelled takes an earlier success back.
+  # Every check on the app's commit, when release-please tagged an earlier
+  # commit than the pushed one.
+  app-check:
+    name: Check the app's commit
+    needs: release-please
+    if: needs.release-please.outputs.app-apart == 'true'
+    permissions:
+      contents: read
+    uses: ./.github/workflows/check.yml
+    with:
+      sha: ${{ needs.release-please.outputs.app-sha }}
+
+  # Marks each checked commit with how its checks ended, as its "Checks"
+  # status, which Release web run by hand and a release from a tag pushed by
+  # hand need (ieasybooks-release verify-commit). It runs however they ended,
+  # also on a re-run, so a later run whose checks failed or was cancelled
+  # takes an earlier success back.
   checks-status:
-    name: Mark the commit's checks
-    needs: [release-please, check]
-    if: ${{ always() && needs.release-please.result == 'success' }}
+    name: Mark the commits' checks
+    needs: [release-please, check, app-check]
+    if: ${{ always() && needs.check.result != 'skipped' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -159,31 +193,70 @@ jobs:
     steps:
       - env:
           GH_TOKEN: ${{ github.token }}
-          SHA: ${{ needs.release-please.outputs.sha }}
           RESULT: ${{ needs.check.result }}
+          APP_APART: ${{ needs.release-please.outputs.app-apart }}
+          APP_SHA: ${{ needs.release-please.outputs.app-sha }}
+          APP_RESULT: ${{ needs.app-check.result }}
         run: |
-          case $RESULT in
-            success) state=success description="Every check passed on main." ;;
-            failure) state=failure description="A check failed on main." ;;
-            *) state=error description="Main's checks didn't finish ($RESULT)." ;;
-          esac
-          gh api "repos/$GITHUB_REPOSITORY/statuses/$SHA" \
-            -f state="$state" -f context=Checks \
-            -f description="$description" \
-            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > /dev/null
-          echo "Marked $SHA: $description"
+          mark() {
+            case $2 in
+              success) state=success description="Every check passed on main." ;;
+              failure) state=failure description="A check failed on main." ;;
+              *) state=error description="Main's checks didn't finish ($2)." ;;
+            esac
+            gh api "repos/$GITHUB_REPOSITORY/statuses/$1" \
+              -f state="$state" -f context=Checks \
+              -f description="$description" \
+              -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > /dev/null
+            echo "Marked $1: $description"
+          }
+          mark "$GITHUB_SHA" "$RESULT"
+          if [ "$APP_APART" = true ]; then
+            mark "$APP_SHA" "$APP_RESULT"
+          fi
       - name: Note that nothing ships
-        if: needs.check.result == 'success' && needs.release-please.outputs.app == 'true' && github.actor != 'AliOsm'
+        if: github.actor != 'AliOsm'
         env:
           ACTOR: ${{ github.actor }}
+          RESULT: ${{ needs.check.result }}
+          APP: ${{ needs.release-please.outputs.app }}
+          APP_APART: ${{ needs.release-please.outputs.app-apart }}
+          APP_RESULT: ${{ needs.app-check.result }}
           TAG: ${{ needs.release-please.outputs.app-tag }}
         run: |
-          echo "::notice::$ACTOR started this run, so it doesn't release $TAG: the vault serves the release secrets only in runs AliOsm started. AliOsm can run Release app on $TAG with dry-run unticked."
+          if [ "$RESULT" = success ]; then
+            echo "::notice::$ACTOR started this run, so it doesn't deploy $GITHUB_SHA: the vault serves the deploy token only in runs AliOsm started. AliOsm can run Release web on main to deploy main's newest commit."
+          fi
+          # The app's commit's checks: this run's, or its own.
+          app_result=$RESULT
+          if [ "$APP_APART" = true ]; then
+            app_result=$APP_RESULT
+          fi
+          if [ "$APP" = true ] && [ "$app_result" = success ]; then
+            echo "::notice::$ACTOR started this run, so it doesn't release $TAG: the vault serves the release secrets only in runs AliOsm started. AliOsm can run Release app on $TAG with dry-run unticked."
+          fi
 
+  web:
+    name: Release web
+    needs: check
+    if: github.actor == 'AliOsm'
+    permissions:
+      contents: read
+      id-token: write
+      statuses: read
+    uses: ./.github/workflows/web.yml
+    with:
+      sha: ${{ github.sha }}
+
+  # From the commit release-please tagged, once that commit's own checks
+  # passed: this run's, or the app's commit's when it's an earlier one.
   app:
     name: Release app
-    needs: [release-please, check]
-    if: needs.release-please.outputs.app == 'true' && github.actor == 'AliOsm'
+    needs: [release-please, check, app-check]
+    if: >-
+      ${{ !cancelled() && github.actor == 'AliOsm' && needs.release-please.outputs.app == 'true' &&
+      ((needs.release-please.outputs.app-apart == 'true' && needs.app-check.result == 'success') ||
+      (needs.release-please.outputs.app-apart != 'true' && needs.check.result == 'success')) }}
     permissions:
       contents: read
       id-token: write
@@ -191,16 +264,27 @@ jobs:
     uses: ./.github/workflows/release.yml
     with:
       tag: ${{ needs.release-please.outputs.app-tag }}
-      sha: ${{ needs.release-please.outputs.sha }}
+      sha: ${{ needs.release-please.outputs.app-sha }}
 
-  # The vault access check, run by hand on main (see the top).
-  access-check:
-    name: Vault access check
+  # The vault access checks, run by hand on main (see the top).
+  access-check-app:
+    name: Vault access check (app)
     if: github.ref == 'refs/heads/main' && inputs.access-check
     permissions:
       contents: read
       id-token: write
       statuses: read
     uses: ./.github/workflows/release.yml
+    with:
+      access-check: true
+
+  access-check-web:
+    name: Vault access check (web)
+    if: github.ref == 'refs/heads/main' && inputs.access-check
+    permissions:
+      contents: read
+      id-token: write
+      statuses: read
+    uses: ./.github/workflows/web.yml
     with:
       access-check: true

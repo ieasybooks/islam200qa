@@ -47,5 +47,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# The release tooling (package.json)
+# The release tooling and the website's deploys (package.json)
 node_modules/
+.wrangler/
