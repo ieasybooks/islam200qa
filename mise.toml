@@ -2,11 +2,18 @@
 # The app. pubspec.lock's SDK-pinned packages are Flutter 3.35's; the
 # workflows read this version from here.
 flutter = "3.35.7"
-# The release tooling (package.json, ieasybooks/release).
+# The release tooling and the website's scripts (package.json, ieasybooks/release).
 bun = "1.4.4"
+# Wrangler, for the website's deploys and hosting tests.
+node = "24.19.0"
 # The store release (fastlane) and the Android build.
 ruby = "3.4.7"
 java = "temurin-21.0.12+8.0.LTS"
 
 [tasks.check]
 run = ["flutter analyze --no-fatal-infos", "flutter test", "bun run store:check", "bun run fastlane:check"]
+
+# The website's checks (check.yml's Web job): build/web as it deploys, served
+# by wrangler dev. See docs/web-deployment.md.
+[tasks."check:web"]
+run = ["bun test scripts/", "bun run web:build", "bun run web:test", "bun run web:deploy:check"]

@@ -1,6 +1,6 @@
 # Releasing
 
-The Android app is released to Google Play and AppGallery: [release-please](https://github.com/googleapis/release-please) versions it from the commit messages, and each version goes to both stores, whose reviewers publish it. iOS isn't released. The website, islam200qa.ieasybooks.com, isn't part of this: Netlify builds and hosts it.
+The Android app is released to Google Play and AppGallery: [release-please](https://github.com/googleapis/release-please) versions it from the commit messages, and each version goes to both stores, whose reviewers publish it. iOS isn't released. The website, islam200qa.ieasybooks.com, isn't part of this: it deploys from each main commit whose checks passed ([web deployment](web-deployment.md)).
 
 The version is `pubspec.yaml`'s, without a `+build` suffix. `release-please-config.json` sets the app up as the repository's one component, and `.release-please-manifest.json` holds its released version. The Android version code follows from the version ([ieasybooks/release](#the-shared-release-tooling): 1.2.3 builds as 1002003), so a release never needs one raised by hand. Builds take both from `ieasybooks-release release-info --app .` (`--build-name` and `--build-number`). Version 1.0.0 shipped by hand as version code 14, so the first release from here, 1.0.1, jumps to 1000001.
 
@@ -17,7 +17,7 @@ The **Commits** check on pull requests (`.github/workflows/commits.yml`, `ieasyb
 
 1. Merge commits to main. After each push, the **Release please** workflow (`.github/workflows/release-please.yml`) opens or updates the release pull request, **chore: release main**, with the new version in `pubspec.yaml` and `CHANGELOG.md`.
 2. Write that version's store release notes in `store/release-notes/<version>/ar.txt` (at most 500 characters), and anything else in `store/` that should change, in an ordinary pull request (`docs: …`, which releases nothing). The release pull request's **Release check** status fails until main has them. `bun run store:check` checks the same on your Mac, once `pubspec.yaml` has the new version.
-3. Ali (`AliOsm`) squash-merges the release pull request. release-please tags the app (`v<version>`) and creates its GitHub release. In the same run, the workflow runs every check (`check.yml`) on the commit it tagged, marks the commit with a **Checks** status saying how they ended, and once they passed releases the app (`release.yml`). Each release job checks out exactly that commit, never the tag by name, and first checks that the tag still points at it and that no newer release exists.
+3. Ali (`AliOsm`) squash-merges the release pull request. release-please tags the app (`v<version>`) and creates its GitHub release. In the same run, the workflow runs every check (`check.yml`) on the pushed commit, marks it with a **Checks** status saying how they ended, and once they passed deploys it to the website and releases the app (`release.yml`) from the commit release-please tagged. That's the pushed commit, unless the run for the merge tagged nothing (it failed, say) and a later push's run tagged it: that run then checks the tagged commit too, and releases the app once its own checks passed. Each release job checks out exactly that commit, never the tag by name, and first checks that the tag still points at it and that no newer release exists.
 
 GitHub's checks on the release pull request wait for someone to approve them, since GitHub Actions opened it. They're not needed: the merge is checked on main before anything ships, and its **Release please** run sets the **Release check** status.
 
@@ -34,7 +34,7 @@ Pushing a version tag by hand releases too: `v<version>`. The tag must match `pu
 | Google Play   | Sends the AAB to the production track with the listing, release notes and changed images (fastlane supply). Managed Publishing is off, so Google publishes it once approved.                                                                                                    |
 | AppGallery    | `ieasybooks-release appgallery publish`: uploads the APK, updates the texts and any changed images, and submits the version, released once approved. While a version is still in review it stops before changing anything: cancel that review in AppGallery Connect and re-run. |
 
-Every job runs on GitHub's Linux runners. The store jobs are independent: one failing doesn't stop the other. The Android build runs only here, in releases and dry runs; `check.yml` runs Flutter's analysis and tests, `store check` and checks that fastlane loads the lane.
+Every job runs on GitHub's Linux runners. The store jobs are independent: one failing doesn't stop the other. The Android build runs only here, in releases and dry runs; `check.yml` runs Flutter's analysis and tests, the website's build and hosting tests, `store check` and checks that fastlane loads the lane.
 
 ## When a release fails
 
@@ -65,7 +65,7 @@ Any other `v*` tag is a dry run: push a throwaway one, such as `git tag v0-dry-r
 
 ## Secrets
 
-The release workflow gets everything from the ieasybooks vault through [`ieasybooks/vault`](https://github.com/ieasybooks/vault). `cloudflare/vault-secrets.tf` in ieasybooks/infrastructure gives the app its callers (`local.release_apps.islam200qa`): the store secrets and the shared upload key go to `release.yml`, on `v*` tags and as called by `release-please.yml` on main, in runs Ali started.
+The release workflow gets everything from the ieasybooks vault through [`ieasybooks/vault`](https://github.com/ieasybooks/vault). `cloudflare/vault-secrets.tf` in ieasybooks/infrastructure gives the app its callers (`local.release_apps.islam200qa`): the store secrets and the shared upload key go to `release.yml`, on `v*` tags and as called by `release-please.yml` on main, in runs Ali started. The website's deploy token, `ISLAM200QA_WEB_DEPLOY_TOKEN`, goes to `web.yml` only ([web deployment](web-deployment.md)).
 
 | Secret                                                        | Used for                                                                   |
 | ------------------------------------------------------------- | -------------------------------------------------------------------------- |
@@ -73,7 +73,7 @@ The release workflow gets everything from the ieasybooks vault through [`ieasybo
 | `GOOGLE_PLAY_SERVICE_ACCOUNT`                                 | Google Play                                                                |
 | `APPGALLERY_CONNECT_SERVICE_ACCOUNT`                          | AppGallery                                                                 |
 
-To check those rules, run **Release please** by hand on main with **access-check** ticked (`gh workflow run release-please.yml --ref main -f access-check=true`). It releases nothing: `release.yml`'s access check asks the vault for its own secrets, which must be served, and for other apps' keys and tokens, which must be refused because no rule matches. Run it after changing the vault's rules.
+To check those rules, run **Release please** by hand on main with **access-check** ticked (`gh workflow run release-please.yml --ref main -f access-check=true`). It releases nothing: `release.yml`'s and `web.yml`'s access checks each ask the vault for their own secrets, which must be served, and for each other's and other apps' keys and tokens, which must be refused because no rule matches. Run it after changing the vault's rules.
 
 ## The shared release tooling
 
@@ -81,6 +81,6 @@ The release commands come from [ieasybooks/release](https://github.com/ieasybook
 
 ## Running the steps on a Mac
 
-`mise install` installs the pinned Flutter, Bun, Ruby and Java, then `mise exec -- bun install` and `mise exec -- bundle install`. `mise run check` runs what `check.yml` does. With the secrets from `mise run vault:run` in ieasybooks/infrastructure, `bundle exec fastlane android publish aab:<aab> dry_run:true` and `node_modules/.bin/ieasybooks-release appgallery publish --app . <apk> --dry-run` check a release as the workflow does.
+`mise install` installs the pinned Flutter, Bun, Node, Ruby and Java, then `mise exec -- bun install` and `mise exec -- bundle install`. `mise run check` runs what `check.yml` does, but for the website's checks, which `mise run check:web` runs. With the secrets from `mise run vault:run` in ieasybooks/infrastructure, `bundle exec fastlane android publish aab:<aab> dry_run:true` and `node_modules/.bin/ieasybooks-release appgallery publish --app . <apk> --dry-run` check a release as the workflow does.
 
 Flutter builds Android with Android Studio's Java when it finds it, which may be newer than the project's Gradle (8.7) runs on; `flutter config --jdk-dir "$(mise where java)"` points it at the pinned Java 21.

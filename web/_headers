@@ -1,0 +1,18 @@
+# How Cloudflare serves the site's files (wrangler.jsonc), checked by
+# scripts/web-build.ts and the hosting tests. See docs/web-deployment.md.
+#
+# Flutter's files have no hash in their names (index.html,
+# flutter_bootstrap.js, flutter_service_worker.js, main.dart.js, canvaskit/,
+# assets/), so they keep Cloudflare's public, max-age=0, must-revalidate: a
+# deploy shows at once, and the service worker's update fetches the new files.
+# A file is cached for a year only when its path names its exact bytes, each by
+# its own rule: an address that isn't a file gets index.html, which a wildcard
+# rule would mark immutable too.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Roboto under the versioned path fonts.gstatic.com serves it at.
+/fonts/roboto/v32/KFOmCnqEu92Fr1Me4GZLCzYlKw.woff2
+  Cache-Control: public, max-age=31536000, immutable

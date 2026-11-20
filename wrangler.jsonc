@@ -1,0 +1,19 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "islam200qa-web",
+  "account_id": "aaed7434338705aa46de5e4e3575e02b",
+  "compatibility_date": "2026-11-04",
+  "workers_dev": false,
+  "preview_urls": false,
+  // Terraform in ieasybooks/infrastructure owns the islam200qa.ieasybooks.com
+  // custom domain. Omit routes: Wrangler must not manage that association on
+  // deploys. There is no Worker script, only the Flutter web build.
+  "assets": {
+    "directory": "./build/web",
+    // The app routes its own addresses (/, /privacy, /12): any address that
+    // isn't a file answers with index.html and a 200, as Netlify's
+    // web/_redirects (/* /index.html 200) did. web/_headers keeps those
+    // answers from being cached.
+    "not_found_handling": "single-page-application",
+  },
+}
