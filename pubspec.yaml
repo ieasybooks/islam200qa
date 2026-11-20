@@ -8,7 +8,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # The app's version, which release-please raises (docs/releasing.md). It has no
 # +build: builds take --build-name and --build-number from
 # `ieasybooks-release release-info --app .`, so 1.0.1 builds as 1000001.
-version: 1.0.1
+version: 1.0.2
 
 environment:
   sdk: ">=2.17.6 <3.0.0"

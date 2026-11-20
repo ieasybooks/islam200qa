@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/ieasybooks/islam200qa/compare/v1.0.1...v1.0.2) (2026-11-20)
+
+
+### Bug Fixes
+
+* give About, privacy and support the shared texts in Arabic and English, and add the terms of use ([#18](https://github.com/ieasybooks/islam200qa/issues/18)) ([52fb653](https://github.com/ieasybooks/islam200qa/commit/52fb653bb8f97d307c054291c8a0a63de47baaf7))
+
 ## [1.0.1](https://github.com/ieasybooks/islam200qa/compare/v1.0.0...v1.0.1) (2026-11-19)
 
 
